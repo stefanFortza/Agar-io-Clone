@@ -1,4 +1,4 @@
-Joc online multiplayer in care cea mai mare bilă este pe primul loc.
+# Nu primesc notă pentru că nu am pus titlu și descriere
 
 ### Important!
 Aveți voie cu cod generat de modele de limbaj la care nu ați contribuit semnificativ doar în folder-ul `generated`.
@@ -71,4 +71,5 @@ O cerință nu se consideră îndeplinită dacă este realizată doar ca o serie
 
 ## Resurse
 
+- [SFML](https://github.com/SFML/SFML/tree/2.6.1) (Zlib)
 - adăugați trimiteri către resursele externe care v-au ajutat sau pe care le-ați folosit
