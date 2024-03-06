@@ -124,11 +124,20 @@ jobs:
       fail-fast: false
       matrix:
         include:
+          - os: ubuntu-22.04
+            c: clang-17
+            cxx: clang++-17
+            name: "MSan: Ubuntu 22.04 Clang 17"
+            # cmake_flags:
+            cmake_generator: Ninja
+            # This env runs memory sanitizers
+            runs_msan: true
 
           - os: ubuntu-22.04
             c: gcc-12
             cxx: g++-12
             name: "ASan: Ubuntu 22.04 GCC 12"
+            # cmake_flags:
             cmake_generator: Ninja
             # This env runs address sanitizers
             runs_asan: true
@@ -137,6 +146,7 @@ jobs:
             c: gcc-11
             cxx: g++-11
             name: "Valgrind: Ubuntu 22.04 GCC 11"
+            # cmake_flags:
             cmake_generator: Ninja
             # This env runs valgrind
             runs_valgrind: true
@@ -145,23 +155,32 @@ jobs:
             c: clang
             cxx: clang++
             name: "ASan: macOS 12 Apple Clang 14"
+            # cmake_flags:
             # cmake_generator:
             # This env runs address sanitizers
+            runs_asan: true
 
-          #   cmake_flags:
-          #   cmake_generator: Ninja
+          - os: macos-12
+            c: gcc-12
+            cxx: g++-12
+            name: "macOS 12 GCC 12"
+            # cmake_flags:
+            # cmake_generator: Ninja
 
           - os: windows-2022
             c: cl
             cxx: cl
             name: "ASan: Windows 2022 MSVC 19.38"
+            # cmake_flags:
             # cmake_generator: Ninja
             # This env runs address sanitizers
+            runs_asan: true
 
           - os: windows-2022
             c: gcc
             cxx: g++
             name: "Windows 2022 MinGW GCC 12"
+            # cmake_flags:
             cmake_generator: Ninja
 
     steps:
@@ -188,7 +207,22 @@ jobs:
       - name: Install Linux Dependencies
         if: runner.os == 'Linux'
         run: |
+          sudo apt-get update
+          sudo apt-get install ninja-build
+
+      # Also see https://github.com/actions/runner-images/discussions/9446#discussioncomment-8668538
+      - name: Install Clang 17
+        if: runner.os == 'Linux' && matrix.runs_msan == true
+        run: |
+          wget https://apt.llvm.org/llvm.sh
+          chmod +x ./llvm.sh
+          sudo ./llvm.sh 17
+
+      - name: Install libc++ (Linux Clang 17)
+        if: runner.os == 'Linux' && matrix.runs_msan == true
+        run: |
           # sudo apt-get update
+          sudo apt-get install --no-install-recommends libc++-17-dev libc++abi-17-dev
 
       - name: Install ninja (Windows)
         if: runner.os == 'Windows'
@@ -244,6 +278,15 @@ jobs:
           install_name_tool -change @rpath/libclang_rt.asan_osx_dynamic.dylib @executable_path/lib/libclang_rt.asan_osx_dynamic.dylib ${{ env.ZIP_NAME }}/${{ env.EXECUTABLE_NAME }}
           mv lib ${{ env.ZIP_NAME }}/
 
+      - name: Copy missing dylibs (g++)
+        if: runner.os == 'macOS' && startsWith(matrix.cxx, 'g++')
+        run: |
+          mkdir lib
+          cp /usr/local/opt/gcc@12/lib/gcc/12/libstdc++.6.dylib /usr/local/opt/gcc@12/lib/gcc/12/libgcc_s.1.1.dylib lib
+          install_name_tool -change /usr/local/opt/gcc@12/lib/gcc/12/libstdc++.6.dylib @executable_path/lib/libstdc++.6.dylib ${{ env.ZIP_NAME }}/${{ env.EXECUTABLE_NAME }}
+          install_name_tool -change /usr/local/opt/gcc@12/lib/gcc/12/libgcc_s.1.1.dylib @executable_path/lib/libgcc_s.1.1.dylib ${{ env.ZIP_NAME }}/${{ env.EXECUTABLE_NAME }}
+          mv lib ${{ env.ZIP_NAME }}/
+
       - name: Copy missing dlls
         if: runner.os == 'Windows' && matrix.cxx == 'cl'
         run: |
@@ -288,15 +331,49 @@ jobs:
           path: ${{ env.ZIP_NAME }}
           retention-days: 30
 
+      - name: Setup memory sanitizer
+        if: runner.os == 'Linux' && matrix.runs_msan == true && steps.cache-tools.outputs.cache-hit != 'true'
         run: |
+          mkdir -p tools
+          cd tools
+          git clone --depth=1 --branch=llvmorg-17.0.6 https://github.com/llvm/llvm-project
+          cd llvm-project
+          # mkdir build; cd build
+          sudo ln -s -f /usr/bin/$CC /usr/bin/clang
+          sudo ln -s -f /usr/bin/$CXX /usr/bin/clang++
+          cmake -G Ninja -S runtimes -B build \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DLLVM_ENABLE_RUNTIMES="libcxx;libcxxabi" \
+            -DCMAKE_C_COMPILER=clang \
+            -DCMAKE_CXX_COMPILER=clang++ \
+            -DLLVM_USE_SANITIZER=MemoryWithOrigins \
+            -DCMAKE_BUILD_WITH_INSTALL_RPATH=true
+          cmake --build build -j6 -- cxx cxxabi
 
       - name: Sanitizers
+        # run one sanitizer for each env to avoid building extra binaries on one env
+        if: (matrix.runs_asan == true || matrix.runs_msan == true) && runner.os != 'Windows'
+        # detect_leaks is not supported on macOS
+        # env:
+        #   ASAN_OPTIONS: detect_leaks=1
+        run: |
+          cat "${INPUT_FILENAME}" | tr -d '\r' | ./${{ env.ZIP_NAME }}/"${EXECUTABLE_NAME}"
+
+      - name: Sanitizers (Windows MSVC)
+        # run one sanitizer for each OS to avoid building extra binaries
+        if: matrix.cxx == 'cl' && matrix.runs_asan == true
         continue-on-error: true
         run: |
+          cat "${INPUT_FILENAME}" | ./${{ env.ZIP_NAME }}/"${EXECUTABLE_NAME}".exe
 
       - name: Valgrind
         if: runner.os == 'Linux' && matrix.runs_valgrind == true
         run: |
+          # remove --show-leak-kinds=all (and --track-origins=yes) if there are many leaks in external libs
+          cat "${INPUT_FILENAME}" | tr -d '\r' | valgrind \
+              --leak-check=full --show-leak-kinds=all --track-origins=yes \
+              --error-exitcode=1 \
+              ./${{ env.ZIP_NAME }}/"${EXECUTABLE_NAME}"
 
       - name: Set Tag Name
         if: startsWith(github.ref, 'refs/tags/')
