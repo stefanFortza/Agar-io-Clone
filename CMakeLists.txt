@@ -9,11 +9,10 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
 option(WARNINGS_AS_ERRORS "Treat warnings as errors" OFF)
-option(BUILD_SHARED_LIBS "Build SFML as shared library" FALSE)
 
-if (CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
-    set(CMAKE_INSTALL_PREFIX "install_dir" CACHE PATH "..." FORCE)
-endif ()
+if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
+  set(CMAKE_INSTALL_PREFIX "install_dir" CACHE PATH "..." FORCE)
+endif()
 
 # disable sanitizers when releasing executables without explicitly requested debug info
 # use generator expressions to set flags correctly in both single and multi config generators
@@ -26,183 +25,96 @@ set(debug_mode "$<OR:${is_debug},${is_rel_with_deb}>")
 # custom functions
 
 function(set_custom_stdlib_and_sanitizers target add_apple_asan)
-    if (MSVC)
+    if(MSVC)
         # see https://gitlab.kitware.com/cmake/cmake/-/issues/24922
         set_target_properties(${target} PROPERTIES VS_USER_PROPS "${CMAKE_SOURCE_DIR}/disable_modules.props")
         target_compile_options(${target} PRIVATE "$<${debug_mode}:/fsanitize=address>" /experimental:module-)
         return()
-    endif ()
+    endif()
 
-    if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
+    if("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
         target_compile_options(${target} PRIVATE -stdlib=libc++)
         target_link_options(${target} PRIVATE -stdlib=libc++)
-    endif ()
+    endif()
 
-    if (APPLE)
+    if(APPLE)
         # first check Apple since Apple is also a kind of Unix
-        if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang" AND add_apple_asan MATCHES true)
+        if("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang" AND add_apple_asan MATCHES true)
             target_compile_options(${target} PRIVATE "$<${debug_mode}:-fsanitize=address,undefined>")
             target_link_options(${target} PRIVATE "$<${debug_mode}:-fsanitize=address,undefined>")
-        endif ()
-    elseif (UNIX)
-        if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "GNU")
-            if ("${CMAKE_CXX_COMPILER_VERSION}" MATCHES "12.")
+        endif()
+    elseif(UNIX)
+        if("${CMAKE_CXX_COMPILER_ID}" MATCHES "GNU")
+            if("${CMAKE_CXX_COMPILER_VERSION}" MATCHES "12.")
                 # check leaks on Linux since macOS does not support the leaks sanitizer yet
                 # leaks sanitizer is enabled by default on Linux, so we do not need to enable it explicitly
                 target_compile_options(${target} PRIVATE "$<${debug_mode}:-fsanitize=address,undefined>")
                 target_link_options(${target} PRIVATE "$<${debug_mode}:-fsanitize=address,undefined>")
-            endif ()
-        elseif ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
-            if ("${CMAKE_CXX_COMPILER_VERSION}" MATCHES "14.")
+            endif()
+        elseif("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
+            if("${CMAKE_CXX_COMPILER_VERSION}" MATCHES "14.")
                 # use semi-colons instead of spaces to separate arguments
                 # it is recommended to quote generator expressions in order to avoid unintentional splitting
                 target_compile_options(${target} PRIVATE "$<${debug_mode}:-fsanitize=memory,undefined;-fsanitize-recover=memory,undefined;-fsanitize-memory-track-origins>")
                 target_link_options(${target} PRIVATE "$<${debug_mode}:-fsanitize=memory,undefined;-fsanitize-recover=memory,undefined;-fsanitize-memory-track-origins;-Wl,-rpath,tools/llvm-project/build/lib>")
-            else ()
+            else()
                 message("No matching Clang version to add sanitizer flags!")
-            endif ()
-        endif ()
-    endif ()
+            endif()
+        endif()
+    endif()
 endfunction()
 
 ###############################################################################
 
 # external dependencies with FetchContent
-include(FetchContent)
-
-# NOTE: Also update SFML_VERSION env var in .github/workflows/cmake.yml:126
-FetchContent_Declare(
-        SFML
-        GIT_REPOSITORY https://github.com/SFML/SFML.git
-        GIT_TAG 2.6.1
-        # GIT_TAG        69ea0cd863aed1d4092b970b676924a716ff718b # 2.6.1
-        # GIT_TAG        origin/master
-        GIT_SHALLOW 1  # works only with branches or tags, not with arbitrary commit hashes
-)
-
-
-FetchContent_MakeAvailable(SFML)
-
-if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "GNU")
-else ()
-    set_custom_stdlib_and_sanitizers(sfml-system false)
-    set_custom_stdlib_and_sanitizers(sfml-window false)
-    set_custom_stdlib_and_sanitizers(sfml-graphics false)
-endif ()
+# include(FetchContent)
+#
+# NOTE: Also update env vars used for caching in
+#         - .github/actions/configure-cmake/action.yml
+#         - .github/workflows/cmake.yml
+# FetchContent_Declare(
+#         SomeLib
+#         GIT_REPOSITORY https://github.com/<SomeUser>/<SomeLib>.git
+#         GIT_TAG        <some_git_hash> # <which tag/branch @ <some_date>>
+#         GIT_SHALLOW    1  # works only with branches or tags, not with arbitrary commit hashes
+# )
+#
+# FetchContent_MakeAvailable(SomeLib)
 
 ###############################################################################
 
 # external dependencies with find_package
 
-find_package(Threads REQUIRED)
-if (APPLE)
-elseif (UNIX)
-    find_package(X11)
-endif ()
+# find_package(Threads REQUIRED)
 
 ###############################################################################
 
 # NOTE: update executable name in .github/workflows/cmake.yml:25 when changing name here
-add_executable(${PROJECT_NAME}
-        main.cpp
-        env_fixes.h
-        src/sources/Game.cpp
-        src/sources/World.cpp
-        src/headers/World.hpp
-        src/headers/Game.hpp
-        src/headers/SceneNode.hpp
-        src/headers/player/Player.hpp
-        src/headers/PlayerCamera.hpp
-        src/headers/SFMLMath.hpp
-        src/sources/SceneNode.cpp
-        src/sources/player/Player.cpp
-        src/sources/Grid.cpp
-        src/headers/Grid.hpp
-        src/sources/entitities/Entity.cpp
-        src/headers/entities/Entity.hpp
-        src/sources/PlayerCamera.cpp
-        src/sources/game_states/GameStateManager.cpp
-        src/headers/game_states/GameStateManager.h
-        src/sources/game_states/State.cpp
-        src/headers/game_states/State.hpp
-        src/sources/game_states/MenuState.cpp
-        src/headers/game_states/MenuState.hpp
-        src/sources/ui/Button.cpp
-        src/headers/ui/Button.h
-        src/sources/game_states/GameState.cpp
-        src/headers/game_states/GameState.h
-        src/sources/utils/Utils.cpp
-        src/headers/utils/Utils.h
-        src/sources/network/ServerManager.cpp
-        src/headers/network/ServerManager.h
-        src/sources/network/ClientManager.cpp
-        src/headers/network/ClientManager.h
-        src/sources/network/NetworkManager.cpp
-        src/headers/network/NetworkManager.h
-        src/sources/player/PlayerBaseClass.cpp
-        src/headers/player/PlayerBaseClass.h
-        src/sources/player/RemotePlayer.cpp
-        src/headers/player/RemotePlayer.h
-        src/sources/Command.cpp
-        src/headers/Command.h
-        src/sources/game_states/LobbyState.cpp
-        src/headers/game_states/LobbyState.h
-        src/sources/game_states/ServerLobbyState.cpp
-        src/headers/game_states/ServerLobbyState.h
-        src/sources/game_states/ClientLobbyState.cpp
-        src/headers/game_states/ClientLobbyState.h
-        src/sources/ui/Label.cpp
-        src/headers/ui/Label.h
-        src/sources/ui/AssetManager.cpp
-        src/headers/ui/AssetManager.h
-        src/headers/utils/Signal.h
-        src/sources/utils/Signal.cpp
-        src/headers/network/OnlinePlayerData.h
-        src/sources/ui/LobbyPlayerLabels.cpp
-        src/headers/ui/LobbyPlayerLabels.h
-        src/sources/game_states/ServerGameState.cpp
-        src/headers/game_states/ServerGameState.h
-        src/sources/game_states/ClientGameState.cpp
-        src/headers/game_states/ClientGameState.h
-        src/sources/player/PlayersManager.cpp
-        src/headers/player/PlayersManager.h
-        src/sources/entitities/FoodManager.cpp
-        src/headers/entities/FoodManager.h
-        src/sources/entitities/Food.cpp
-        src/headers/entities/Food.h
-        src/sources/entitities/Collidable.cpp
-        src/headers/entities/Collidable.h
-        src/headers/utils/Constants.h
-        src/sources/ui/LeaderBoards.cpp
-        src/headers/ui/LeaderBoards.h
-        src/sources/ui/LeaderBoardsLabel.cpp
-        src/headers/ui/LeaderBoardsLabel.h
-        src/sources/ui/InputField.cpp
-        src/headers/ui/InputField.h
-)
+add_executable(${PROJECT_NAME} main.cpp
+        generated/src/Helper.cpp)
 
 ###############################################################################
 
 # target definitions
 
-if (GITHUB_ACTIONS)
-    message("NOTE: GITHUB_ACTIONS defined")
-    target_compile_definitions(${PROJECT_NAME} PRIVATE GITHUB_ACTIONS)
-endif ()
+if(GITHUB_ACTIONS)
+  message("NOTE: GITHUB_ACTIONS defined")
+  target_compile_definitions(${PROJECT_NAME} PRIVATE GITHUB_ACTIONS)
+endif()
 
 ###############################################################################
 
-if (WARNINGS_AS_ERRORS)
+if(WARNINGS_AS_ERRORS)
     set_property(TARGET ${PROJECT_NAME} PROPERTY COMPILE_WARNING_AS_ERROR ON)
-endif ()
+endif()
 
 # custom compiler flags
 message("Compiler: ${CMAKE_CXX_COMPILER_ID} version ${CMAKE_CXX_COMPILER_VERSION}")
-if (MSVC)
+if(MSVC)
     target_compile_options(${PROJECT_NAME} PRIVATE /W4 /permissive- /wd4244 /wd4267 /wd4996 /external:anglebrackets /external:W0)
-else ()
+else()
     target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wextra -pedantic)
-endif ()
+endif()
 
 ###############################################################################
 
@@ -214,15 +126,9 @@ set_custom_stdlib_and_sanitizers(${PROJECT_NAME} true)
 # use SYSTEM so cppcheck/clang-tidy does not report warnings from these directories
 target_include_directories(${PROJECT_NAME} SYSTEM PRIVATE generated/include)
 # target_include_directories(${PROJECT_NAME} SYSTEM PRIVATE ext/<SomeHppLib>/include)
-target_include_directories(${PROJECT_NAME} SYSTEM PRIVATE ${SFML_SOURCE_DIR}/include)
-target_include_directories(${PROJECT_NAME} SYSTEM PRIVATE include)
-target_link_libraries(${PROJECT_NAME} PRIVATE sfml-graphics sfml-window sfml-system sfml-network Threads::Threads)
-
-
-if (APPLE)
-elseif (UNIX)
-    target_link_libraries(${PROJECT_NAME} PRIVATE X11)
-endif ()
+# target_include_directories(${PROJECT_NAME} SYSTEM PRIVATE ${<SomeLib>_SOURCE_DIR}/include)
+# target_link_directories(${PROJECT_NAME} PRIVATE ${<SomeLib>_BINARY_DIR}/lib)
+# target_link_libraries(${PROJECT_NAME} <SomeLib>)
 
 ###############################################################################
 
@@ -231,6 +137,6 @@ endif ()
 install(TARGETS ${PROJECT_NAME} DESTINATION bin)
 # install(DIRECTORY some_dir1 some_dir2 DESTINATION bin)
 # install(FILES some_file1.txt some_file2.md DESTINATION bin)
-if (APPLE)
+if(APPLE)
     install(FILES launcher.command DESTINATION bin)
-endif ()
+endif()
