@@ -3,7 +3,6 @@
 #include <chrono>
 #include <thread>
 #include <SFML/Graphics.hpp>
-#include <Helper.h>
 #include <Game.hpp>
 
 //////////////////////////////////////////////////////////////////////
