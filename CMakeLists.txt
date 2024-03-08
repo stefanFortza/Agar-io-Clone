@@ -105,8 +105,21 @@ endif()
 # NOTE: update executable name in .github/workflows/cmake.yml:25 when changing name here
 add_executable(${PROJECT_NAME}
     main.cpp
-    generated/src/Helper.cpp
-    env_fixes.h
+        env_fixes.h
+        generated/src/Game.cpp
+        generated/src/World.cpp
+        generated/include/World.hpp
+        generated/include/Game.hpp
+        generated/include/SFML_Window.hpp
+        generated/include/Node.hpp
+        generated/include/Player.hpp
+        generated/include/PlayerCamera.hpp
+        generated/include/SFMLMath.hpp
+        generated/src/SFML_Window.cpp
+        generated/src/Node.cpp
+        generated/src/Player.cpp
+        generated/src/Grid.cpp
+        generated/include/Grid.hpp
 )
 
 ###############################################################################
@@ -143,8 +156,9 @@ set_custom_stdlib_and_sanitizers(${PROJECT_NAME} true)
 target_include_directories(${PROJECT_NAME} SYSTEM PRIVATE generated/include)
 # target_include_directories(${PROJECT_NAME} SYSTEM PRIVATE ext/<SomeHppLib>/include)
 target_include_directories(${PROJECT_NAME} SYSTEM PRIVATE ${SFML_SOURCE_DIR}/include)
-target_link_directories(${PROJECT_NAME} PRIVATE ${SFML_BINARY_DIR}/lib)
+target_include_directories(${PROJECT_NAME} SYSTEM PRIVATE include)
 target_link_libraries(${PROJECT_NAME} PRIVATE sfml-graphics sfml-window sfml-system Threads::Threads)
+
 
 if(APPLE)
 elseif(UNIX)
