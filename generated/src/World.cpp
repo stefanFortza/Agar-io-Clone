@@ -1,38 +1,62 @@
 //
 // Created by stefantacu on 07.03.2024.
 //
-#include "Node.hpp"
 #include "Player.hpp"
 #include <SFML/Graphics.hpp>
 #include <World.hpp>
 
-World::World() : m_world_size(50000, 50000), m_grid_color(220, 220, 220, 255), m_origin(sf::Vector2f(60.f, 60.f)) {
+World::World(GameContext &context, sf::RenderWindow &window) : SceneNode(context), m_player(nullptr),
+                                                               m_player_camera(nullptr),
+                                                               m_world_size(50000, 50000),
+                                                               m_grid_color(220, 220, 220, 255),
+                                                               m_origin(sf::Vector2f(60.f, 60.f)) {
     // Set children
-    this->m_children.push_back(&m_player);
+    std::unique_ptr<Player> player(new Player(context));
+    m_player = player.get();
+    this->attachChild(std::move(player));
+
+
+    std::unique_ptr<PlayerCamera> player_camera(new PlayerCamera(context));
+    m_player_camera = player_camera.get();
+    this->attachChild(std::move(player_camera));
+    this->m_player_camera->setTarget(m_player);
+
     this->m_origin.setOrigin(sf::Vector2f(30.f, 30.f));
     this->m_origin.setFillColor(sf::Color::Red);
 
     initializeGrid();
 };
 
-World::~World() = default;
 
-void World::onUpdate(sf::Time /*delta*/, sf::RenderWindow &/*window*/) {
-    m_appleShape.move(sf::Vector2f(1.f, 1.f));
+void World::updateCurrent(sf::Time delta) {
 }
 
-void World::onDraw(sf::RenderWindow &target, const sf::Transform &transform) const {
+void World::drawCurrent(sf::RenderTarget &target, const sf::RenderStates states) const {
+    // TODO Here draw UI
+    sf::CircleShape shape(100, 100);
+    shape.setFillColor(sf::Color::Black);
+    auto win = m_context.getSFMLWindow();
+
+    target.setView(win->GetRenderWindow().getDefaultView());
+    target.draw(shape);
+    target.setView(m_player_camera->getView());
+
+
     for (const auto &i: this->m_vertical_grid) {
-        target.draw(i, transform);
+        target.draw(i, states);
     }
 
     for (const auto &i: this->m_horizontal_grid) {
-        target.draw(i, transform);
+        target.draw(i, states);
     }
 
+    // std::cout << states.transform.getMatrix();
 
-    target.draw(m_origin, transform);
-    // target.draw(m_appleShape, transform);
+    target.draw(m_origin, states);
+}
+
+sf::View &World::getNodeView() {
+    return m_player_camera->getView();
 }
 
 void World::initializeGrid() {

@@ -1,24 +1,27 @@
-#include "./node.hpp"
+#ifndef PLAYERCAMERA_HPP
+#define PLAYERCAMERA_HPP
 
-class PlayerCamera : public Node
-{
+#include "SceneNode.hpp"
+
+class PlayerCamera : public SceneNode {
 public:
-    PlayerCamera()
-    {
-    }
+    PlayerCamera(GameContext &context);
 
-    ~PlayerCamera()
-    {
-    }
+    ~PlayerCamera() override = default;
+
+    void setTarget(SceneNode *target);
+
+    sf::View &getView();
 
 private:
-    sf::View m_view
+    sf::View m_view;
+    SceneNode *m_target;
+    // sf::
 
-        virtual void
-        onUpdate(sf::Time delta, sf::RenderWindow &window)
-    {
-    }
-    virtual void onDraw(sf::RenderWindow &target, const sf::Transform &transform) const
-    {
-    }
+
+    void updateCurrent(sf::Time delta) override;
+
+    void drawCurrent(sf::RenderTarget &target, sf::RenderStates states) const override;
 };
+
+#endif // PLAYERCAMERA_HPP

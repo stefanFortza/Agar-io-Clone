@@ -1,17 +1,16 @@
 #ifndef PLAYER_HPP
 #define PLAYER_HPP
 
-#include <iostream>
-#include <SFMLMath.hpp>
-#include "Node.hpp"
+#include "Entity.hpp"
+#include "Game.hpp"
 
-class Player : public Node {
+class Player : public Entity {
 public:
-    Player();
+    explicit Player(GameContext &context);
 
     ~Player();
 
-    const sf::View &GetView();
+    // const sf::View &GetView() const;
 
 private:
     sf::CircleShape m_player_shape;
@@ -19,9 +18,9 @@ private:
     sf::View m_view;
     float m_speed = 200;
 
-    void onUpdate(sf::Time delta, sf::RenderWindow &window) override;
+    void updateCurrent(sf::Time delta) override;
 
-    void onDraw(sf::RenderWindow &target, const sf::Transform &transform) const override;
+    void drawCurrent(sf::RenderTarget &target, sf::RenderStates states) const override;
 };
 
 #endif
