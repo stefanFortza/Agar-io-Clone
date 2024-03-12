@@ -10,7 +10,7 @@ class Player;
 
 class World : public SceneNode {
 public:
-    explicit World(GameContext &context);
+    explicit World(GameContext &context, sf::RenderWindow &window);
 
 
     sf::View &getNodeView();
