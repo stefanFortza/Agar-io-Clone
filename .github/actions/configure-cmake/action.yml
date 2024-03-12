@@ -1,10 +1,10 @@
 name: 'Configure CMake'
 description: 'Common logic for CMake configuration'
 inputs:
-  warnings_as_errors:
-    description: 'Treat warnings as errors'
-    required: false
-    default: 'OFF'
+  # warnings_as_errors:
+  #   description: 'Treat warnings as errors'
+  #   required: false
+  #   default: 'OFF'
   custom_flags:
     description: 'Custom CMake configuration flags'
     required: false
