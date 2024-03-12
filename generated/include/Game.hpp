@@ -1,51 +1,36 @@
 #ifndef GAME_HPP
 #define GAME_HPP
-
 #include <SFML/Graphics.hpp>
-#include "Window.hpp"
+
+#include "GameContext.hpp"
+#include "SFML_Window.hpp"
 #include "World.hpp"
-#include "Player.hpp"
 
-class Game
-{
+class Game {
 public:
-    Game() : m_window("Chapter 2", sf::Vector2u(800, 600)), m_world(sf::Vector2u(800, 600)){};
-    ~Game() {}
+    Game();
 
-    void HandleInput() {}
+    ~Game();
 
-    void Update()
-    {
-        m_window.Update(); // Update window events.
-        m_world.Update(*m_window.GetRenderWindow());
-    }
+    void HandleInput();
 
-    void Render()
-    {
-        m_window.BeginDraw(); // Clear.
+    void Update();
 
-        // Draw root node
-        // TODO add root node state machine
+    void Render();
 
-        m_world.Draw(*m_window.GetRenderWindow(), sf::Transform::Identity);
+    SFML_Window *GetWindow();
 
-        m_window.EndDraw(); // Display.
-    }
+    sf::Time GetElapsed() const;
 
-    SFML_Window *GetWindow()
-    {
-        return &m_window;
-    }
-
-    sf::Time GetElapsed() { return m_elapsed; }
-    void RestartClock() { m_elapsed = m_clock.restart(); }
+    void RestartClock();
 
 private:
+    GameContext m_context;
     SFML_Window m_window;
+    sf::RenderStates m_states;
     // add UI
     World m_world;
     sf::Clock m_clock;
     sf::Time m_elapsed;
 };
-
 #endif // GAME_HPP
