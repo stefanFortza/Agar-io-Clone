@@ -5,11 +5,11 @@
 #include <SFML/Graphics.hpp>
 #include <World.hpp>
 
-World::World(GameContext &context, sf::RenderWindow &window) : SceneNode(context), m_player(nullptr),
-                                                               m_player_camera(nullptr),
-                                                               m_world_size(50000, 50000),
-                                                               m_grid_color(220, 220, 220, 255),
-                                                               m_origin(sf::Vector2f(60.f, 60.f)) {
+World::World(GameContext &context) : SceneNode(context), m_player(nullptr),
+                                     m_player_camera(nullptr),
+                                     m_world_size(50000, 50000),
+                                     m_grid_color(220, 220, 220, 255),
+                                     m_origin(sf::Vector2f(60.f, 60.f)) {
     // Set children
     std::unique_ptr<Player> player(new Player(context));
     m_player = player.get();

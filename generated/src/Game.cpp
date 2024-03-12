@@ -8,7 +8,7 @@
 #include "Player.hpp"
 
 Game::Game() : m_context(&m_window), m_window("Chapter 2", sf::Vector2u(1280, 720)),
-               m_world(m_context, m_window.GetRenderWindow()) {
+               m_world(m_context) {
 };
 
 Game::~Game() = default;
