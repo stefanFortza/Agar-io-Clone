@@ -1,17 +1,23 @@
 #ifndef WORLD_HPP
 #define WORLD_HPP
 #include <SFML/Graphics.hpp>
-#include "Node.hpp"
+#include "SceneNode.hpp"
 #include "Player.hpp"
+#include "PlayerCamera.hpp"
 
-class World : public Node {
+
+class Player;
+
+class World : public SceneNode {
 public:
-    World();
+    explicit World(GameContext &context, sf::RenderWindow &window);
 
-    ~World() override;
+
+    sf::View &getNodeView();
 
 private:
-    Player m_player;
+    Player *m_player;
+    PlayerCamera *m_player_camera;
     float m_grid_spacing = 100.f;
     sf::Vector2u m_windowSize;
     sf::Vector2i m_world_size;
@@ -21,9 +27,10 @@ private:
     sf::Color m_grid_color;
     sf::RectangleShape m_origin;
 
-    void onUpdate(sf::Time delta, sf::RenderWindow &window) override;
+    void updateCurrent(sf::Time delta) override;
 
-    void onDraw(sf::RenderWindow &target, const sf::Transform &transform) const override;
+    void drawCurrent(sf::RenderTarget &target, sf::RenderStates states) const override;
+
 
     void initializeGrid();
 };

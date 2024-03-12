@@ -4,10 +4,10 @@
 
 #ifndef GRID_H
 #define GRID_H
-#include "Node.hpp"
+#include "SceneNode.hpp"
 
 
-class Grid : public Node {
+class Grid : public SceneNode {
 };
 
 

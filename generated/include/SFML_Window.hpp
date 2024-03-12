@@ -3,8 +3,7 @@
 
 #include <SFML/Graphics.hpp>
 
-class SFML_Window
-{
+class SFML_Window {
 private:
     sf::RenderWindow m_window;
     sf::Vector2u m_windowSize;
@@ -35,7 +34,9 @@ public:
 
     void ToggleFullscreen();
 
-    void Draw(const sf::Drawable &l_drawable);
+    void SetView(const sf::View &view);
+
+    void Draw(const sf::Drawable &l_drawable, const sf::RenderStates &states);
 
 private:
     void Setup(const std::string &l_title, const sf::Vector2u &l_size);
@@ -43,7 +44,6 @@ private:
     void Destroy();
 
     void Create();
-
 };
 
 #endif // WINDOW_HPP
