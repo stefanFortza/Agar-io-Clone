@@ -17,7 +17,7 @@ World::World() : m_world_size(50000, 50000), m_grid_color(220, 220, 220, 255), m
 
 World::~World() = default;
 
-void World::onUpdate(sf::Time delta, sf::RenderWindow &window) {
+void World::onUpdate(sf::Time /*delta*/, sf::RenderWindow &/*window*/) {
     m_appleShape.move(sf::Vector2f(1.f, 1.f));
 }
 

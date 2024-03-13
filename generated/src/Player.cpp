@@ -37,7 +37,7 @@ void Player::onUpdate(sf::Time delta, sf::RenderWindow &window) {
     m_player_shape.move(dir);
 }
 
-void Player::onDraw(sf::RenderWindow &target, const sf::Transform &transform) const {
+void Player::onDraw(sf::RenderWindow &target, const sf::Transform &/*transform*/) const {
     // target.draw(m_shape, transform);
     target.draw(m_player_shape);
 }
