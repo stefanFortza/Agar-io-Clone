@@ -5,7 +5,7 @@
 
 class PlayerCamera : public SceneNode {
 public:
-    PlayerCamera(GameContext &context);
+    PlayerCamera();
 
     ~PlayerCamera() override = default;
 
@@ -16,10 +16,10 @@ public:
 private:
     sf::View m_view;
     SceneNode *m_target;
-    // sf::
 
+    void handleEventCurrent(const sf::Event &event) override;
 
-    void updateCurrent(sf::Time delta) override;
+    void updateCurrent(const sf::Time &delta) override;
 
     void drawCurrent(sf::RenderTarget &target, sf::RenderStates states) const override;
 };

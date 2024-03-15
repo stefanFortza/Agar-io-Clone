@@ -3,48 +3,46 @@
 
 #include <memory>
 #include <SFML/Graphics.hpp>
-#include <X11/X.h>
 
-#include "GameContext.hpp"
 
 // the abstract base class
 class SceneNode : public sf::Transformable, public sf::Drawable {
 public:
     typedef std::unique_ptr<SceneNode> Ptr;
 
-    explicit SceneNode(GameContext &context);
+    explicit SceneNode();
 
     ~SceneNode() override;
 
-
-    void attachChild(Ptr child);
-
-    Ptr detachChild(const SceneNode &node);
+    void handleEvent(const sf::Event &event);
 
     sf::Transform getWorldTransform() const;
 
     sf::Vector2f getWorldPosition() const;
 
-
     // ... functions to transform the node
 
-    void update(sf::Time delta);
+    void update(const sf::Time &delta);
 
     // ... functions to manage the node's children
 
+    void attachChild(Ptr child);
+
+    Ptr detachChild(const SceneNode &node);
+
 private:
-    virtual void updateCurrent(sf::Time delta) = 0;
+    virtual void handleEventCurrent(const sf::Event &event) = 0;
+
+    virtual void updateCurrent(const sf::Time &delta) = 0;
 
     void draw(sf::RenderTarget &target, sf::RenderStates states) const override;
 
     virtual void drawCurrent(sf::RenderTarget &target, sf::RenderStates states) const = 0;
 
 private:
-    // sf::Transform m_transform;
     std::vector<Ptr> m_children;
 
 protected:
-    GameContext &m_context;
     SceneNode *m_parent;
 };
 

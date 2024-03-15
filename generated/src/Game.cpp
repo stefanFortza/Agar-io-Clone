@@ -2,48 +2,69 @@
 // Created by stefantacu on 07.03.2024.
 //
 #include <Game.hpp>
+#include <iostream>
 #include <SFML/Graphics.hpp>
-#include "SFML_Window.hpp"
-#include "World.hpp"
-#include "Player.hpp"
+#include "game_states/MenuState.hpp"
 
-Game::Game() : m_context(&m_window), m_window("Chapter 2", sf::Vector2u(1280, 720)),
-               m_world(m_context, m_window.GetRenderWindow()) {
+Game::Game() : m_game_state_manager(new GameStateManager()),
+               m_window(sf::VideoMode(1280, 720), "Agar.io") {
+	// m_window("Chapter 2", sf::Vector2u(1280, 720)) {
+	m_window.setFramerateLimit(60);
+	m_game_state_manager->setState(std::make_unique<MenuState>(m_game_state_manager, &m_window));
 };
 
 Game::~Game() = default;
 
-void Game::HandleInput() {
+void Game::handleEvent(const sf::Event &event) const {
+	m_game_state_manager->handleEvent(event);
 }
 
-void Game::Update() {
-    m_window.Update(); // Update window events.
-
-    m_world.update(m_elapsed);
+void Game::handleInput() {
 }
 
-void Game::Render() {
-    m_window.BeginDraw(); // Clear.
+void Game::update() {
+	// m_window.update(); // Update window events.
 
-    // Draw root node
-    // TODO add root node state machine
-
-    m_window.SetView(m_world.getNodeView());
-    m_window.Draw(m_world, m_states);
-    m_window.SetView(m_window.GetRenderWindow().getDefaultView());
-
-    // sf::CircleShape shape(100, 100);
-    // shape.setFillColor(sf::Color::Black);
-    // m_window.Draw(shape, m_states);
-
-    m_window.EndDraw(); // Display.
+	m_game_state_manager->update(m_elapsed);
 }
 
-SFML_Window *Game::GetWindow() {
-    return &m_window;
+void Game::render() {
+	// m_window.clear();
+	// m_window.beginDraw(); // Clear.
+	//
+	// m_game_state_manager->render();
+	//
+	// m_window.endDraw(); // Display.
+	// m_window.display();
 }
 
-sf::Time Game::GetElapsed() const { return m_elapsed; }
+// SFML_Window *Game::getWindow() {
+// 	// return &m_window;
+// }
 
-void Game::RestartClock() { m_elapsed = m_clock.restart(); }
+// bool Game::isWindowOpen() const {
+//     return m_window.isOpen();
+// }
+
+sf::Time Game::getElapsed() const { return m_elapsed; }
+
+void Game::restartClock() { m_elapsed = m_clock.restart(); }
+
+void Game::start() {
+	while (m_window.isOpen()) {
+		sf::Event event{};
+		while (m_window.pollEvent(event)) {
+			if (event.type == sf::Event::Closed)
+				m_window.close();
+
+			m_game_state_manager->handleEvent(event);
+		}
+
+		m_window.clear(sf::Color::White);
+		m_game_state_manager->update(m_elapsed);
+		m_game_state_manager->render();
+		m_window.display();
+		restartClock();
+	}
+}
 

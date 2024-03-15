@@ -122,9 +122,17 @@ add_executable(${PROJECT_NAME}
         generated/include/Grid.hpp
         generated/src/Entity.cpp
         generated/include/Entity.hpp
-        generated/include/GameContext.hpp
         generated/src/PlayerCamera.cpp
-        generated/src/GameContext.cpp
+        generated/src/game_states/GameStateManager.cpp
+        generated/include/game_states/GameStateManager.h
+        generated/src/game_states/State.cpp
+        generated/include/game_states/State.hpp
+        generated/src/game_states/MenuState.cpp
+        generated/include/game_states/MenuState.hpp
+        generated/src/ui/Button.cpp
+        generated/include/ui/Button.h
+        generated/src/game_states/GameState.cpp
+        generated/include/game_states/GameState.h
 )
 
 ###############################################################################
