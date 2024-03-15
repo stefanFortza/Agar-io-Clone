@@ -1,7 +1,8 @@
-#ifndef WINDOW_HPP
-#define WINDOW_HPP
+#pragma once
 
 #include <SFML/Graphics.hpp>
+#include "Game.hpp"
+
 
 class SFML_Window {
 private:
@@ -18,32 +19,31 @@ public:
 
     ~SFML_Window();
 
-    void BeginDraw();
+    void beginDraw();
 
-    void EndDraw();
+    void endDraw();
 
-    void Update();
+    void update();
 
-    bool IsDone() const;
+    bool isDone() const;
 
-    bool IsFullscreen() const;
+    bool isFullscreen() const;
 
-    sf::Vector2u GetWindowSize() const;
+    sf::Vector2u getWindowSize() const;
 
-    sf::RenderWindow &GetRenderWindow();
+    sf::RenderWindow &getRenderWindow();
 
-    void ToggleFullscreen();
+    void toggleFullscreen();
 
-    void SetView(const sf::View &view);
+    void setView(const sf::View &view);
 
-    void Draw(const sf::Drawable &l_drawable, const sf::RenderStates &states);
+    void draw(const sf::Drawable &l_drawable, const sf::RenderStates &states);
 
 private:
-    void Setup(const std::string &l_title, const sf::Vector2u &l_size);
+    void setup(const std::string &l_title, const sf::Vector2u &l_size);
 
-    void Destroy();
+    void destroy();
 
-    void Create();
+    void create();
 };
 
-#endif // WINDOW_HPP

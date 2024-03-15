@@ -4,7 +4,8 @@
 
 #include "../include/Entity.hpp"
 
-Entity::Entity(GameContext &context): SceneNode(context) {
+
+Entity::Entity(): SceneNode() {
 }
 
 void Entity::setVelocity(const sf::Vector2f velocity) {
@@ -18,10 +19,6 @@ void Entity::setVelocity(float vx, float vy) {
 
 sf::Vector2f Entity::getVelocity() const {
  return m_velocity;
-}
-
-void Entity::updateCurrent(sf::Time delta) {
- // this->move(m_velocity * delta.asSeconds());
 }
 
 void Entity::updateCurrentPhysics(sf::Time delta) {

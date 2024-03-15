@@ -5,17 +5,24 @@
 #include <cassert>
 #include <SFML/Graphics.hpp>
 #include <SceneNode.hpp>
-
+#include "Entity.hpp"
 #include "Game.hpp"
 
-SceneNode::SceneNode(GameContext &context): m_context(context), m_parent(nullptr) {
+SceneNode::SceneNode(): m_parent(nullptr) {
 }
 
 SceneNode::~SceneNode() = default;
 
+void SceneNode::handleEvent(const sf::Event &event) {
+    handleEventCurrent(event);
+
+    for (const auto &node: m_children)
+        node->handleEvent(event);
+}
+
 // ... functions to transform the node
 
-void SceneNode::update(const sf::Time delta) {
+void SceneNode::update(const sf::Time &delta) {
     updateCurrent(delta);
 
     if (dynamic_cast<Entity *>(this)) {

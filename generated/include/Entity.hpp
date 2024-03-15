@@ -6,13 +6,13 @@
 #define ENTITY_H
 
 #include <SFML/Graphics.hpp>
+#include <SceneNode.hpp>
 
-#include "SceneNode.hpp"
-
+class SceneNode;
 
 class Entity : public SceneNode {
 public:
- explicit Entity(GameContext &context);
+ explicit Entity();
 
  void setVelocity(sf::Vector2f velocity);
 
@@ -25,7 +25,9 @@ public:
 private:
  sf::Vector2f m_velocity;
 
- void updateCurrent(sf::Time delta) override;
+ // void handleEventCurrent(const sf::Event &event) override;
+ //
+ // void updateCurrent(const sf::Time &delta) override;
 };
 
 

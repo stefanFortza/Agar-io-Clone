@@ -6,34 +6,45 @@
 #include <Player.hpp>
 #include <SFML/Graphics.hpp>
 
-Player::Player(GameContext &context): Entity(context),
-                                      m_player_shape(50.f),
-                                      m_view(sf::FloatRect(0.f, 0.f, 1280.f, 720.f)) {
-    m_speed = 200;
+Player::Player(GameStateManager *manager,
+               sf::RenderWindow *window): m_player_shape(50.f),
+                                          m_window(window) {
     m_player_shape.setOrigin(sf::Vector2f(50.f, 50.f));
     m_player_shape.setFillColor(sf::Color::Blue);
-    // m_player_shape.setPosition(sf::Vector2f(1280.f / 2.f, 720 / 2.f));
 }
 
 Player::~Player() = default;
 
-// const sf::View &Player::GetView() const {
-//     return m_view;
-// }
+void Player::handleEventCurrent(const sf::Event &event) {
+    switch (event.type) {
+        case sf::Event::MouseMoved: {
+            dir = sf::Vector2f(static_cast<float>(event.mouseMove.x), static_cast<float>(event.mouseMove.y));
+            std::cout << "mouse" << '\n';
+            auto center = static_cast<sf::Vector2f>(m_window->getSize() / 2U);
+            dir -= center;
+            sf::normalize(dir);
+            dir *= m_speed;
+            break;
+        }
+        default: break;
+    }
+}
 
-void Player::updateCurrent(sf::Time delta) {
-    // I need the view
-    dir = sf::Vector2f(sf::Mouse::getPosition(m_context.getSFMLWindow()->GetRenderWindow()));
-    auto center = m_context.getSFMLWindow()->GetRenderWindow().getSize() / 2U;
+void Player::updateCurrent(const sf::Time & /*delta*/) {
+    // I need the window
+    // dir = sf::Vector2f(sf::Mouse::getPosition(m_context.getSFMLWindow()->getRenderWindow()));
+    // auto center = m_context.getSFMLWindow()->getRenderWindow().getSize() / 2U;
+    // auto center = sf::Vector2f(1280 / 2., 720 / 2.);
+    // dir -= center;
+    // sf::normalize(dir);
 
     // std::cout << dir.x << " " << dir.y << '\n';
     // dir = dir - m_context.getPlayerView().getCenter();
-    dir = dir - static_cast<sf::Vector2f>(center);
-    sf::normalize(dir);
-
+    // dir = dir - static_cast<sf::Vector2f>(center);
+    // sf::normalize(dir);
+    //
     // dir *= delta.asSeconds() * m_speed;
-    dir *= m_speed;
-    std::cout << center.x << " " << center.y << "\n";
+    // std::cout << center.x << " " << center.y << "\n";
     // std::cout << dir.x << " " << dir.y << '\n';
     // std::cout << sf::getLength(dir) << "\n";
     // m_shape.setPosition(dir);

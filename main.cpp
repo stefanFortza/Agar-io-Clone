@@ -2,7 +2,6 @@
 #include <array>
 #include <chrono>
 #include <thread>
-#include <SFML/Graphics.hpp>
 #include <Game.hpp>
 
 //////////////////////////////////////////////////////////////////////
@@ -14,41 +13,41 @@
 
 //////////////////////////////////////////////////////////////////////
 /// This class is used to test that the memory leak checks work as expected even when using a GUI
-class SomeClass
-{
+class SomeClass {
 public:
-    explicit SomeClass(int) {}
+	explicit SomeClass(int) {
+	}
 };
 
-SomeClass *getC()
-{
-    return new SomeClass{2};
+SomeClass *getC() {
+	return new SomeClass{2};
 }
+
 //////////////////////////////////////////////////////////////////////
 
-int main()
-{
-    ////////////////////////////////////////////////////////////////////////
-    /// NOTE: this function call is needed for environment-specific fixes //
-    init_threads(); //
-    ////////////////////////////////////////////////////////////////////////
-    ///
+int main() {
+	////////////////////////////////////////////////////////////////////////
+	/// NOTE: this function call is needed for environment-specific fixes //
+	init_threads(); //
+	////////////////////////////////////////////////////////////////////////
+	///
 
-    SomeClass *c = getC();
-    std::cout << c << "\n";
-    delete c;
+	SomeClass *c = getC();
+	std::cout << c << "\n";
+	delete c;
 
-   	// Program entry point.
+	// Program entry point.
 	Game game; // Creating our game object.
-	while (!game.GetWindow()->IsDone())
-	{
-		// Game loop.
-		game.HandleInput();
-		game.Update();
-		game.Render();
-		// sf::sleep(sf::seconds(0.2));
-		game.RestartClock();
-	}
+	game.start();
+	// while (!game.getWindow()->isDone()) {
+	// 	// while (game.isWindowOpen()) {
+	// 	// Game loop.
+	// 	game.handleInput();
+	// 	game.update();
+	// 	game.render();
+	// 	// sf::sleep(sf::seconds(0.2));
+	// 	game.restartClock();
+	// }
 
-    return 0;
+	return 0;
 }
