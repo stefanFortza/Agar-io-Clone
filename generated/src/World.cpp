@@ -5,18 +5,18 @@
 #include <SFML/Graphics.hpp>
 #include <World.hpp>
 
-World::World(GameContext &context, sf::RenderWindow &window) : SceneNode(context), m_player(nullptr),
-                                                               m_player_camera(nullptr),
-                                                               m_world_size(50000, 50000),
-                                                               m_grid_color(220, 220, 220, 255),
-                                                               m_origin(sf::Vector2f(60.f, 60.f)) {
+World::World(GameStateManager *manager, sf::RenderWindow *window) : m_player(nullptr),
+                                                                    m_player_camera(nullptr),
+                                                                    m_world_size(50000, 50000),
+                                                                    m_grid_color(220, 220, 220, 255),
+                                                                    m_origin(sf::Vector2f(60.f, 60.f)) {
     // Set children
-    std::unique_ptr<Player> player(new Player(context));
+    std::unique_ptr<Player> player(new Player(manager, window));
     m_player = player.get();
     this->attachChild(std::move(player));
 
 
-    std::unique_ptr<PlayerCamera> player_camera(new PlayerCamera(context));
+    std::unique_ptr<PlayerCamera> player_camera(new PlayerCamera());
     m_player_camera = player_camera.get();
     this->attachChild(std::move(player_camera));
     this->m_player_camera->setTarget(m_player);
@@ -28,17 +28,10 @@ World::World(GameContext &context, sf::RenderWindow &window) : SceneNode(context
 };
 
 
-void World::updateCurrent(sf::Time delta) {
+void World::updateCurrent(const sf::Time & /*delta*/) {
 }
 
 void World::drawCurrent(sf::RenderTarget &target, const sf::RenderStates states) const {
-    // TODO Here draw UI
-    sf::CircleShape shape(100, 100);
-    shape.setFillColor(sf::Color::Black);
-    auto win = m_context.getSFMLWindow();
-
-    target.setView(win->GetRenderWindow().getDefaultView());
-    target.draw(shape);
     target.setView(m_player_camera->getView());
 
 
@@ -53,6 +46,15 @@ void World::drawCurrent(sf::RenderTarget &target, const sf::RenderStates states)
     // std::cout << states.transform.getMatrix();
 
     target.draw(m_origin, states);
+    // TODO Here draw UI
+    sf::CircleShape shape(100, 100);
+    shape.setFillColor(sf::Color::Black);
+
+    target.setView(target.getDefaultView());
+    target.draw(shape);
+}
+
+void World::handleEventCurrent(const sf::Event &event) {
 }
 
 sf::View &World::getNodeView() {
@@ -64,7 +66,7 @@ void World::initializeGrid() {
 
     // vertical
     for (size_t i = 0; i < 100; i++) {
-        this->m_vertical_grid[i].setSize(sf::Vector2f(1.5f, 2000.f));
+        this->m_vertical_grid[i].setSize(sf::Vector2f(3.f, 2000.f));
         this->m_vertical_grid[i].setFillColor(this->m_grid_color);
         this->m_vertical_grid[i].setPosition(sf::Vector2f(m_grid_spacing * i, -500.f));
     }
@@ -72,7 +74,7 @@ void World::initializeGrid() {
     // horizontal
     for (size_t i = 0; i < 100; i++) {
         sf::Color color(220, 220, 220, 255);
-        this->m_horizontal_grid[i].setSize(sf::Vector2f(1.5f, 2000.f));
+        this->m_horizontal_grid[i].setSize(sf::Vector2f(3.f, 2000.f));
         this->m_horizontal_grid[i].setFillColor(this->m_grid_color);
         this->m_horizontal_grid[i].setPosition(sf::Vector2f(1000.f, m_grid_spacing * i));
         this->m_horizontal_grid[i].setRotation(90.f);

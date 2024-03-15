@@ -1,10 +1,9 @@
-#ifndef GAME_HPP
-#define GAME_HPP
-#include <SFML/Graphics.hpp>
+#pragma once
 
-#include "GameContext.hpp"
-#include "SFML_Window.hpp"
-#include "World.hpp"
+#include <SFML/Graphics.hpp>
+#include "./game_states/GameStateManager.h"
+
+class GameStateManager;
 
 class Game {
 public:
@@ -12,25 +11,25 @@ public:
 
     ~Game();
 
-    void HandleInput();
+    void handleEvent(const sf::Event &event) const;
 
-    void Update();
+    void handleInput();
 
-    void Render();
+    void update();
 
-    SFML_Window *GetWindow();
+    void render();
 
-    sf::Time GetElapsed() const;
+    // bool isWindowOpen() const;
 
-    void RestartClock();
+    sf::Time getElapsed() const;
+
+    void restartClock();
+
+    void start();
 
 private:
-    GameContext m_context;
-    SFML_Window m_window;
-    sf::RenderStates m_states;
-    // add UI
-    World m_world;
+    GameStateManager *m_game_state_manager;
+    sf::RenderWindow m_window;
     sf::Clock m_clock;
     sf::Time m_elapsed;
 };
-#endif // GAME_HPP

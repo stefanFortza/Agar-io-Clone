@@ -6,7 +6,7 @@
 
 class Player : public Entity {
 public:
-    explicit Player(GameContext &context);
+    explicit Player(GameStateManager *manager, sf::RenderWindow *window);
 
     ~Player();
 
@@ -16,9 +16,12 @@ private:
     sf::CircleShape m_player_shape;
     sf::Vector2f dir;
     sf::View m_view;
+    sf::RenderWindow *m_window;
     float m_speed = 200;
 
-    void updateCurrent(sf::Time delta) override;
+    void handleEventCurrent(const sf::Event &event) override;
+
+    void updateCurrent(const sf::Time &delta) override;
 
     void drawCurrent(sf::RenderTarget &target, sf::RenderStates states) const override;
 };

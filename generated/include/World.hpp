@@ -10,7 +10,7 @@ class Player;
 
 class World : public SceneNode {
 public:
-    explicit World(GameContext &context, sf::RenderWindow &window);
+    explicit World(GameStateManager *manager, sf::RenderWindow *window);
 
 
     sf::View &getNodeView();
@@ -27,10 +27,11 @@ private:
     sf::Color m_grid_color;
     sf::RectangleShape m_origin;
 
-    void updateCurrent(sf::Time delta) override;
+    void updateCurrent(const sf::Time &delta) override;
 
     void drawCurrent(sf::RenderTarget &target, sf::RenderStates states) const override;
 
+    void handleEventCurrent(const sf::Event &event) override;
 
     void initializeGrid();
 };
