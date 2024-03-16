@@ -2,7 +2,7 @@
 #include <array>
 #include <chrono>
 #include <thread>
-#include <Game.hpp>
+#include "src/headers/Game.hpp"
 
 //////////////////////////////////////////////////////////////////////
 /// NOTE: this include is needed for environment-specific fixes     //
