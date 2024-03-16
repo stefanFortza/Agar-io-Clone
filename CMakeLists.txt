@@ -135,10 +135,12 @@ add_executable(${PROJECT_NAME}
         src/headers/game_states/GameState.h
         src/sources/utils/Vector2.cpp
         src/headers/utils/Vector2.h
-        src/sources/server/Server.cpp
-        src/headers/server/Server.h
-        src/sources/client/Client.cpp
-        src/headers/client/Client.h
+        src/sources/network/Server.cpp
+        src/headers/network/Server.h
+        src/sources/network/Client.cpp
+        src/headers/network/Client.h
+        src/sources/network/NetworkManager.cpp
+        src/headers/network/NetworkManager.h
 )
 
 ###############################################################################

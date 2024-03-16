@@ -28,6 +28,8 @@ private:
 	Button hostBtn;
 
 	virtual void play();
+
+	void changeState(bool isServer);
 };
 
 

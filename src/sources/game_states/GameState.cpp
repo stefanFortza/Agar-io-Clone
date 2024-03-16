@@ -4,18 +4,15 @@
 
 #include "../../headers/game_states/GameState.h"
 
+#include <iostream>
+
 GameState::GameState(GameStateManager *manager,
                      sf::RenderWindow *window): State(manager, window),
-                                                m_world(manager, window), m_client() {
+                                                m_world(manager, window) {
 }
 
 void GameState::handleEvent(const sf::Event &event) {
     m_world.handleEvent(event);
-    if (m_game_state_manager->isServer()) {
-        m_server.start();
-    } else {
-        m_client.start();
-    }
 }
 
 void GameState::render() {

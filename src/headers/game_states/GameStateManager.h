@@ -8,20 +8,23 @@
 #include <memory>
 #include <SFML/Graphics.hpp>
 #include "State.hpp"
+#include "../network/NetworkManager.h"
 
 
 class State;
-
+class NetworkManager;
 
 class GameStateManager {
+private:
+	std::unique_ptr<State> currentState;
+	std::unique_ptr<NetworkManager> m_network_manager;
+
 public:
 	GameStateManager();
 
+	void receiveData();
+
 	void handleEvent(const sf::Event &event) const;
-
-	bool isServer() const;
-
-	void setIsServer(bool isServer);
 
 	void render() const;
 
@@ -29,9 +32,11 @@ public:
 
 	void setState(std::unique_ptr<State> state);
 
-	~GameStateManager();
+	void setNetworkManager(std::unique_ptr<NetworkManager> network_manager);
 
-private:
-	std::unique_ptr<State> currentState;
-	bool m_is_server{};
+	void sendData();
+
+	NetworkManager *getNetworkManager();
+
+	~GameStateManager();
 };

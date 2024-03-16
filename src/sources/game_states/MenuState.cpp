@@ -5,7 +5,7 @@
 #include "../../headers/game_states/MenuState.hpp"
 #include <iostream>
 #include "../../headers/game_states/GameState.h"
-#include "../../headers/server/Server.h"
+#include "../../headers/network/Server.h"
 
 
 MenuState::MenuState(GameStateManager *manager,
@@ -43,18 +43,24 @@ void MenuState::update(const sf::Time &/*deltaTime*/) {
 }
 
 void MenuState::host() {
-	std::cout << "host pressed" << '\n';
 	// m_game_state_manager->setState(std::make_unique<ConnectionState>(manager, window));
-
-	m_game_state_manager->setIsServer(true);
-	m_game_state_manager->setState(std::make_unique<GameState>(m_game_state_manager, m_window));
+	changeState(true);
 }
 
 void MenuState::play() {
-	std::cout << "pressed" << '\n';
-	// m_game_state_manager->setState(std::make_unique<ConnectionState>(manager, window));
-	m_game_state_manager->setState(std::make_unique<GameState>(m_game_state_manager, m_window));
-	m_game_state_manager->setIsServer(false);
+	changeState(false);
+}
+
+void MenuState::changeState(bool isServer) {
+	if (isServer)
+		std::cout << "host pressed" << '\n';
+	else
+		std::cout << "pressed" << '\n';
+
+	auto g_state = std::make_unique<GameState>(m_game_state_manager, m_window);
+	m_game_state_manager->setNetworkManager(
+		std::make_unique<NetworkManager>(m_game_state_manager, isServer, g_state.get()));
+	m_game_state_manager->setState(std::move(g_state));
 }
 
 MenuState::~MenuState() = default;

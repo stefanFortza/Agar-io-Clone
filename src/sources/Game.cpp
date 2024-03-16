@@ -52,6 +52,8 @@ void Game::restartClock() { m_elapsed = m_clock.restart(); }
 void Game::start() {
 	while (m_window.isOpen()) {
 		sf::Event event{};
+		m_game_state_manager->receiveData();
+
 		while (m_window.pollEvent(event)) {
 			if (event.type == sf::Event::Closed)
 				m_window.close();
@@ -62,6 +64,7 @@ void Game::start() {
 		m_window.clear(sf::Color::White);
 		m_game_state_manager->update(m_elapsed);
 		m_game_state_manager->render();
+		m_game_state_manager->sendData();
 		m_window.display();
 		restartClock();
 	}
