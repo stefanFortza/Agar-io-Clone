@@ -5,29 +5,18 @@
 #pragma once
 #include "State.hpp"
 #include "../World.hpp"
-#include "../client/Client.h"
-#include "../server/Server.h"
 #include "SFML/Graphics/Text.hpp"
-#include "SFML/Network/Packet.hpp"
 
 
 class GameState :
 		public State {
 private:
-	// Level level;
-	// NetworkManager networkManager;
 	// LocalPlayer localPlayer;
 	// NetPlayer netPlayer;
 	World m_world;
 	bool gameEnd = false;
-	sf::Text endText;
-	Client m_client;
-	Server m_server;
+	// sf::Text endText;
 
-
-	//
-	// void handlePackets();
-	//
 	// void handleEnemyMove(sf::Packet &packet);
 	//
 	// void handlePutBomb(sf::Packet &packet);

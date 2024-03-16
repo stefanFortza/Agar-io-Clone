@@ -6,12 +6,8 @@
 #include <ostream>
 #include <SFML/Graphics.hpp>
 
-#include "../SFML_Window.hpp"
-#include "GameStateManager.h"
-
 
 class GameStateManager;
-class SFML_Window;
 
 class State {
 protected:

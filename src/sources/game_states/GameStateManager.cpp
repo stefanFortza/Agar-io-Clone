@@ -4,18 +4,11 @@
 
 #include "../../headers/game_states/GameStateManager.h"
 
-GameStateManager::GameStateManager() = default;
+GameStateManager::GameStateManager(): m_network_manager(nullptr) {
+} ;
 
 void GameStateManager::handleEvent(const sf::Event &event) const {
 	currentState->handleEvent(event);
-}
-
-bool GameStateManager::isServer() const {
-	return m_is_server;
-}
-
-void GameStateManager::setIsServer(bool isServer) {
-	m_is_server = isServer;
 }
 
 void GameStateManager::render() const {
@@ -28,6 +21,24 @@ void GameStateManager::update(const sf::Time &deltaTime) const {
 
 void GameStateManager::setState(std::unique_ptr<State> state) {
 	currentState = std::move(state);
+}
+
+void GameStateManager::setNetworkManager(std::unique_ptr<NetworkManager> network_manager) {
+	m_network_manager = std::move(network_manager);
+}
+
+void GameStateManager::receiveData() {
+	if (m_network_manager)
+		m_network_manager->receiveData();
+}
+
+void GameStateManager::sendData() {
+	if (m_network_manager)
+		m_network_manager->sendData();
+}
+
+NetworkManager *GameStateManager::getNetworkManager() {
+	return m_network_manager.get();
 }
 
 GameStateManager::~GameStateManager() = default;

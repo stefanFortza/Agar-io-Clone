@@ -4,7 +4,7 @@
 
 #ifndef CLIENT_H
 #define CLIENT_H
-#include "SFML/Network/UdpSocket.hpp"
+#include "../../../cmake-build-debug/_deps/sfml-src/include/SFML/Network/UdpSocket.hpp"
 
 
 class Client {

@@ -5,8 +5,9 @@
 #include <ostream>
 #include <SFML/Graphics.hpp>
 
-#include "game_states/GameStateManager.h"
+// #include "game_states/GameStateManager.h"
 
+class GameStateManager;
 
 // the abstract base class
 class SceneNode : public sf::Transformable, public sf::Drawable {
