@@ -106,33 +106,39 @@ endif ()
 add_executable(${PROJECT_NAME}
         main.cpp
         env_fixes.h
-        generated/src/Game.cpp
-        generated/src/World.cpp
-        generated/include/World.hpp
-        generated/include/Game.hpp
-        generated/include/SFML_Window.hpp
-        generated/include/SceneNode.hpp
-        generated/include/Player.hpp
-        generated/include/PlayerCamera.hpp
-        generated/include/SFMLMath.hpp
-        generated/src/SFML_Window.cpp
-        generated/src/SceneNode.cpp
-        generated/src/Player.cpp
-        generated/src/Grid.cpp
-        generated/include/Grid.hpp
-        generated/src/Entity.cpp
-        generated/include/Entity.hpp
-        generated/src/PlayerCamera.cpp
-        generated/src/game_states/GameStateManager.cpp
-        generated/include/game_states/GameStateManager.h
-        generated/src/game_states/State.cpp
-        generated/include/game_states/State.hpp
-        generated/src/game_states/MenuState.cpp
-        generated/include/game_states/MenuState.hpp
-        generated/src/ui/Button.cpp
-        generated/include/ui/Button.h
-        generated/src/game_states/GameState.cpp
-        generated/include/game_states/GameState.h
+        src/sources/Game.cpp
+        src/sources/World.cpp
+        src/headers/World.hpp
+        src/headers/Game.hpp
+        src/headers/SFML_Window.hpp
+        src/headers/SceneNode.hpp
+        src/headers/Player.hpp
+        src/headers/PlayerCamera.hpp
+        src/headers/SFMLMath.hpp
+        src/sources/SFML_Window.cpp
+        src/sources/SceneNode.cpp
+        src/sources/Player.cpp
+        src/sources/Grid.cpp
+        src/headers/Grid.hpp
+        src/sources/Entity.cpp
+        src/headers/Entity.hpp
+        src/sources/PlayerCamera.cpp
+        src/sources/game_states/GameStateManager.cpp
+        src/headers/game_states/GameStateManager.h
+        src/sources/game_states/State.cpp
+        src/headers/game_states/State.hpp
+        src/sources/game_states/MenuState.cpp
+        src/headers/game_states/MenuState.hpp
+        src/sources/ui/Button.cpp
+        src/headers/ui/Button.h
+        src/sources/game_states/GameState.cpp
+        src/headers/game_states/GameState.h
+        src/sources/utils/Vector2.cpp
+        src/headers/utils/Vector2.h
+        src/sources/server/Server.cpp
+        src/headers/server/Server.h
+        src/sources/client/Client.cpp
+        src/headers/client/Client.h
 )
 
 ###############################################################################
@@ -170,7 +176,7 @@ target_include_directories(${PROJECT_NAME} SYSTEM PRIVATE generated/include)
 # target_include_directories(${PROJECT_NAME} SYSTEM PRIVATE ext/<SomeHppLib>/include)
 target_include_directories(${PROJECT_NAME} SYSTEM PRIVATE ${SFML_SOURCE_DIR}/include)
 target_include_directories(${PROJECT_NAME} SYSTEM PRIVATE include)
-target_link_libraries(${PROJECT_NAME} PRIVATE sfml-graphics sfml-window sfml-system Threads::Threads)
+target_link_libraries(${PROJECT_NAME} PRIVATE sfml-graphics sfml-window sfml-system sfml-network Threads::Threads)
 
 
 if (APPLE)
