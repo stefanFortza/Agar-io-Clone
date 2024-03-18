@@ -15,6 +15,7 @@ SceneNode::SceneNode(GameStateManager *manager,
                                                m_window(window),
                                                m_parent(nullptr),
                                                m_name(name) {
+    m_children.reserve(0);
 }
 
 

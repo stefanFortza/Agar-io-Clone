@@ -3,8 +3,9 @@
 
 #include "Entity.hpp"
 #include "Game.hpp"
+#include "PlayerBaseClass.h"
 
-class Player : public Entity {
+class Player : public PlayerBaseClass {
 public:
     explicit Player(GameStateManager *manager,
                     sf::RenderWindow *window,
@@ -15,11 +16,6 @@ public:
     // const sf::View &GetView() const;
 
 private:
-    sf::CircleShape m_player_shape;
-    sf::Vector2f dir;
-    sf::View m_view;
-    float m_speed = 200;
-
     void handleEventCurrent(const sf::Event &event) override;
 
     void updateCurrent(const sf::Time &delta) override;

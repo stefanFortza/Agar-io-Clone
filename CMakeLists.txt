@@ -141,6 +141,10 @@ add_executable(${PROJECT_NAME}
         src/headers/network/Client.h
         src/sources/network/NetworkManager.cpp
         src/headers/network/NetworkManager.h
+        src/sources/PlayerBaseClass.cpp
+        src/headers/PlayerBaseClass.h
+        src/sources/RemotePlayer.cpp
+        src/headers/RemotePlayer.h
 )
 
 ###############################################################################

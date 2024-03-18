@@ -44,6 +44,12 @@ public:
 	void update(const sf::Time &deltaTime) override;
 
 	~GameState();
+
+	void handlePlayerJoined(std::string &id);
+
+	void handlePlayerPosition(std::string &id, sf::Vector2f vector2);
+
+	void handleConnected(std::map<std::string, std::unique_ptr<OnlinePlayerData>> &map);
 };
 
 

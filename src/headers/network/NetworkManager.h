@@ -5,20 +5,27 @@
 #ifndef NETWORKMANAGER_H
 #define NETWORKMANAGER_H
 #include <memory>
-
 #include "Client.h"
 #include "Server.h"
-// #include "../game_states/GameState.h"
-// #include "../game_states/GameStateManager.h"
 
 class GameStateManager;
 class GameState;
+class Server;
+class Client;
+
 
 class NetworkManager {
 private:
     GameStateManager *m_game_state_manager;
     bool m_is_server{};
     std::unique_ptr<Client> m_client;
+
+public:
+    Client *getClient();
+
+    Server *getServer();
+
+private:
     std::unique_ptr<Server> m_server;
     GameState *m_game_state;
 

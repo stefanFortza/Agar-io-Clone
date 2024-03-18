@@ -4,16 +4,26 @@
 #include "SceneNode.hpp"
 #include "Player.hpp"
 #include "PlayerCamera.hpp"
+#include "RemotePlayer.h"
+#include "network/Server.h"
 
-
+struct OnlinePlayerData;
+class RemotePlayer;
 class Player;
 
 class World : public SceneNode {
 public:
     explicit World(GameStateManager *manager, sf::RenderWindow *window);
 
+    void handlePlayerJoined(std::string &id);
+
+    void handlePlayerPosition(std::string &id, sf::Vector2f vector2);
+
+    void handleConnectedToServer(std::map<std::string, std::unique_ptr<OnlinePlayerData> > &map);
+
 private:
     Player *m_player;
+    std::map<std::string, RemotePlayer *> m_remote_players;
     PlayerCamera *m_player_camera;
     float m_grid_spacing = 100.f;
     sf::Vector2u m_windowSize;
@@ -29,6 +39,7 @@ private:
     void drawCurrent(sf::RenderTarget &target, sf::RenderStates states) const override;
 
     void handleEventCurrent(const sf::Event &event) override;
+
 
     void initializeGrid();
 };
