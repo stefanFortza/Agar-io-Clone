@@ -24,3 +24,15 @@ void GameState::update(const sf::Time &deltaTime) {
 }
 
 GameState::~GameState() = default;
+
+void GameState::handlePlayerJoined(std::string &id) {
+    m_world.handlePlayerJoined(id);
+}
+
+void GameState::handlePlayerPosition(std::string &id, sf::Vector2f vector2) {
+    m_world.handlePlayerPosition(id, vector2);
+}
+
+void GameState::handleConnected(std::map<std::string, std::unique_ptr<OnlinePlayerData> > &map) {
+    m_world.handleConnectedToServer(map);
+}

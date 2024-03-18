@@ -7,13 +7,8 @@
 #include <SFML/Graphics.hpp>
 
 Player::Player(GameStateManager *manager,
-               sf::RenderWindow *window, const std::string &name): Entity(manager, window, name),
-                                                                   m_player_shape(50.f) {
-    // auto center = sf::Vector2f(static_cast<float>(m_window->getSize().x),
-    // static_cast<float>(m_window->getSize().y)) / 2.f;
-    // m_player_shape.setOrigin(center);
-    m_player_shape.setOrigin(sf::Vector2f(50.f, 50.f));
-    m_player_shape.setFillColor(sf::Color::Blue);
+               sf::RenderWindow *window,
+               const std::string &name): PlayerBaseClass(manager, window, name) {
 }
 
 Player::~Player() = default;
@@ -63,6 +58,14 @@ void Player::updateCurrent(const sf::Time & /*delta*/) {
 
     // this->setVelocity(dir);
     // this->move(dir);
+    if (!m_game_state_manager->getNetworkManager()->isServer()) {
+        sf::Packet packet;
+        packet << PacketType::PlayerPosition;
+        packet << getPosition().x << getPosition().y;
+        m_game_state_manager->getNetworkManager()->getClient()->sendPacket(packet);
+    } else {
+        m_game_state_manager->getNetworkManager()->getServer()->setCurrentPlayerData(getPosition().x, getPosition().y);
+    }
 }
 
 void Player::drawCurrent(sf::RenderTarget &target, sf::RenderStates states) const {
