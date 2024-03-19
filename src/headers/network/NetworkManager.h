@@ -25,6 +25,8 @@ public:
 
     Server *getServer();
 
+    void disconnect();
+
 private:
     std::unique_ptr<Server> m_server;
     GameState *m_game_state;

@@ -55,10 +55,10 @@ void Game::start() {
 		m_game_state_manager->receiveData();
 
 		while (m_window.pollEvent(event)) {
+			m_game_state_manager->handleEvent(event);
+
 			if (event.type == sf::Event::Closed)
 				m_window.close();
-
-			m_game_state_manager->handleEvent(event);
 		}
 
 		m_window.clear(sf::Color::White);

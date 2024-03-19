@@ -14,6 +14,7 @@ private:
 	// LocalPlayer localPlayer;
 	// NetPlayer netPlayer;
 	World m_world;
+	sf::RenderStates m_render_states;
 	bool gameEnd = false;
 	// sf::Text endText;
 
@@ -49,7 +50,9 @@ public:
 
 	void handlePlayerPosition(std::string &id, sf::Vector2f vector2);
 
-	void handleConnected(std::map<std::string, std::unique_ptr<OnlinePlayerData>> &map);
+	void handleConnected(std::map<std::string, std::unique_ptr<OnlinePlayerData> > &map);
+
+	void handlePlayerDisconected(const std::string &id);
 };
 
 

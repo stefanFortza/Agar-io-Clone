@@ -7,7 +7,7 @@
 #include "RemotePlayer.h"
 #include "network/Server.h"
 
-struct OnlinePlayerData;
+class OnlinePlayerData;
 class RemotePlayer;
 class Player;
 
@@ -20,6 +20,8 @@ public:
     void handlePlayerPosition(std::string &id, sf::Vector2f vector2);
 
     void handleConnectedToServer(std::map<std::string, std::unique_ptr<OnlinePlayerData> > &map);
+
+    void handlePlayerDisconected(const std::string &id);
 
 private:
     Player *m_player;
@@ -39,6 +41,8 @@ private:
     void drawCurrent(sf::RenderTarget &target, sf::RenderStates states) const override;
 
     void handleEventCurrent(const sf::Event &event) override;
+
+    void setOnlinePlayersData();
 
 
     void initializeGrid();

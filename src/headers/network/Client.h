@@ -22,7 +22,9 @@ class Client {
     std::string m_client_id;
 
 public:
-    const std::string &getClientId() const;
+    std::string getClientId();
+
+    void disconnect();
 
     Client(GameState *game_state);
 

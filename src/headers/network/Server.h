@@ -4,17 +4,21 @@
 
 #ifndef SERVER_H
 #define SERVER_H
+#include <ostream>
+
 #include "SFML/Network/Packet.hpp"
 #include "SFML/Network/UdpSocket.hpp"
 #include "../game_states/GameState.h"
 #include "NetworkManager.h"
+#include <string>
 // #include <memory>
 
 enum PacketType:unsigned int {
 	Connected,
 	PlayerPosition,
 	PlayerJoinedServer,
-	OnlinePlayersData
+	OnlinePlayersData,
+	PlayerDisconected
 };
 
 class Player;
@@ -24,16 +28,23 @@ class Server;
 class OnlinePlayerData {
 public:
 	OnlinePlayerData(sf::IpAddress ip_address, int port, float x = 0, float y = 0) {
-		this->ip_address = ip_address;
-		this->port = port;
+		this->m_ip_address = ip_address;
+		this->m_port = port;
 		this->x = x;
 		this->y = y;
 	}
 
+	OnlinePlayerData(const OnlinePlayerData &other)
+		: m_ip_address(other.m_ip_address),
+		  m_port(other.m_port),
+		  x(other.x),
+		  y(other.y) {
+	}
+
 	std::string getId() {
-		std::string id(ip_address.toString());
+		std::string id(m_ip_address.toString());
 		id += ":";
-		id += std::to_string(port);
+		id += std::to_string(m_port);
 		return id;
 	}
 
@@ -46,18 +57,46 @@ public:
 			case PlayerPosition:
 				break;
 			case PlayerJoinedServer:
-				packet << ip_address.toString() << port << x << y;
+				packet << getId() << x << y;
 				break;
 			case OnlinePlayersData:
+				packet << getId() << x << y;
 				break;
+			case PlayerDisconected:
+				packet << getId();
+				break;
+			default: ;
 		}
 		return packet;
 	}
 
-	// private:
-public:
-	sf::IpAddress ip_address;
-	int port;
+	friend std::ostream &operator<<(std::ostream &os, const OnlinePlayerData &obj) {
+		return os
+		       << "ip_address: " << obj.m_ip_address
+		       << " port: " << obj.m_port
+		       << " x: " << obj.x
+		       << " y: " << obj.y;
+	}
+
+	OnlinePlayerData &operator=(const OnlinePlayerData &other) {
+		if (this == &other)
+			return *this;
+		m_ip_address = other.m_ip_address;
+		m_port = other.m_port;
+		x = other.x;
+		y = other.y;
+		return *this;
+	}
+
+	sf::IpAddress &getIpAdress();
+
+	int getPort();
+
+	void setXY(float x, float y);
+
+private:
+	sf::IpAddress m_ip_address;
+	int m_port;
 	float x, y;
 };
 
@@ -68,11 +107,16 @@ private:
 	std::map<std::string, std::unique_ptr<OnlinePlayerData> > m_connected_players;
 	sf::Packet m_packet;
 	GameState *m_game_state;
+	std::string m_server_id;
 
 public:
 	explicit Server(GameState *game_state);
 
 	static std::string getId(sf::IpAddress sender, unsigned short port);
+
+	const std::map<std::string, std::unique_ptr<OnlinePlayerData> > &getConnectedPlayers() const;
+
+	const std::string &getServerId() const;
 
 	void start();
 
