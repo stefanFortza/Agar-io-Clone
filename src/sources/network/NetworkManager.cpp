@@ -12,6 +12,14 @@ Server *NetworkManager::getServer() {
     return m_server.get();
 }
 
+void NetworkManager::disconnect() {
+    if (isServer()) {
+        // m_server->disconnect();
+    } else {
+        m_client->disconnect();
+    }
+}
+
 NetworkManager::NetworkManager(GameStateManager *manager, const bool is_server,
                                GameState *game_state): m_game_state_manager(manager),
                                                        m_is_server(is_server),

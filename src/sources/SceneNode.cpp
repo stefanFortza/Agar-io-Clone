@@ -71,6 +71,16 @@ SceneNode::Ptr SceneNode::detachChild(const SceneNode &node) {
     return result;
 }
 
+SceneNode::Ptr SceneNode::detachChild(const std::string &id) {
+    auto found = std::find_if(m_children.begin(), m_children.end(),
+                              [&](Ptr &p) -> bool { return p->m_name == id; });
+    // assert(found != m_children.end());
+    Ptr result = std::move(*found);
+    result->m_parent = nullptr;
+    m_children.erase(found);
+    return result;
+}
+
 sf::Transform SceneNode::getWorldTransform() const {
     sf::Transform transform = sf::Transform::Identity;
     for (const SceneNode *node = this;

@@ -9,15 +9,36 @@
 #include "../../headers/network/NetworkManager.h"
 
 
-Server::Server(GameState *game_state): m_game_state(game_state) {
+const std::map<std::string, std::unique_ptr<OnlinePlayerData> > &Server::getConnectedPlayers() const {
+	return m_connected_players;
+}
+
+const std::string &Server::getServerId() const {
+	return m_server_id;
+}
+
+sf::IpAddress &OnlinePlayerData::getIpAdress() {
+	return m_ip_address;
+}
+
+int OnlinePlayerData::getPort() {
+	return m_port;
+}
+
+void OnlinePlayerData::setXY(float x, float y) {
+	this->x = x;
+	this->y = y;
+}
+
+Server::Server(GameState *game_state): m_game_state(game_state), m_server_id() {
 	m_socket.bind(50000);
 	m_socket.setBlocking(false);
 
-	auto id = getId(sf::IpAddress::getLocalAddress(), 50000);
+	m_server_id = getId(sf::IpAddress::getLocalAddress(), 50000);
 	std::unique_ptr<OnlinePlayerData> player = std::make_unique<
 		OnlinePlayerData>(sf::IpAddress::getLocalAddress(), 50000);
 
-	m_connected_players[id] = std::move(player);
+	m_connected_players[m_server_id] = std::move(player);
 	std::cout << "server started" << "\n";
 }
 
@@ -57,13 +78,13 @@ void Server::start() {
 				// Tell other players a player has joined
 				for (const auto &pair: m_connected_players) {
 					auto &online_player = pair.second;
-					if (online_player->getId() != getId(sf::IpAddress::getLocalAddress(), 50000)) {
-						// sf::Packet packet = online_player->getPacket(PlayerJoinedServer);
-						sf::Packet packet;
-						online_player->getPacket(PlayerJoinedServer, packet);
+					// sf::Packet packet = online_player->getPacket(PlayerJoinedServer);
+					sf::Packet packet;
+					online_player->getPacket(PlayerJoinedServer, packet);
 
-						m_socket.send(packet, online_player->ip_address, online_player->port);
-						std::cout << online_player->ip_address << online_player->port << "\n";
+					if (online_player->getId() != getId(sf::IpAddress::getLocalAddress(), 50000)) {
+						m_socket.send(packet, online_player->getIpAdress(), online_player->getPort());
+						std::cout << online_player->getIpAdress() << online_player->getPort() << "\n";
 					}
 
 					// packet_for_current_player << online_player->getPacket(OnlinePlayersData);
@@ -79,7 +100,10 @@ void Server::start() {
 			case PlayerPosition: {
 				float x, y;
 				m_packet >> x >> y;
-				m_game_state->handlePlayerPosition(id, sf::Vector2f(x, y));
+
+				if (m_connected_players.count(id)) {
+					m_game_state->handlePlayerPosition(id, sf::Vector2f(x, y));
+				}
 				break;
 			}
 			case PlayerJoinedServer: {
@@ -97,10 +121,14 @@ void Server::start() {
 					auto &online_player = pair.second;
 					if (online_player->getId() != getId(sf::IpAddress::getLocalAddress(), 50000)) {
 						sf::Packet packet;
-						online_player->getPacket(PlayerJoinedServer, packet);
+						packet << PlayerJoinedServer;
+						player->getPacket(PlayerJoinedServer, packet);
 
-						m_socket.send(packet, online_player->ip_address, online_player->port);
-						std::cout << online_player->ip_address << online_player->port << "\n";
+						m_socket.send(packet, online_player->getIpAdress(), online_player->getPort());
+
+						online_player->getPacket(PlayerJoinedServer, packet_for_current_player);
+						std::cout << online_player->getIpAdress() << online_player->getPort() << "\n";
+						packet.clear();
 					}
 
 					online_player->getPacket(Connected, packet_for_current_player);
@@ -112,7 +140,28 @@ void Server::start() {
 				m_game_state->handlePlayerJoined(id);
 				break;
 			}
-			case OnlinePlayersData:
+			case OnlinePlayersData: {
+				// sf::Packet packet;
+				// packet << OnlinePlayersData;
+				// packet << static_cast<int>(m_connected_players.size());
+				//
+				// for (const auto &pair: m_connected_players) {
+				// 	auto &online_player = pair.second;
+				// 	online_player->getPacket(OnlinePlayersData, packet);
+				// }
+				//
+				// broadCastToOnlinePlayers(packet);
+				break;
+			}
+			case PlayerDisconected:
+				if (id != m_server_id) {
+					sf::Packet packet;
+					packet << PlayerDisconected << id;
+					m_connected_players.erase(id);
+					// delete m_connected_players[id];
+					m_game_state->handlePlayerDisconected(id);
+					broadCastToOnlinePlayers(packet);
+				}
 				break;
 		}
 	}
@@ -120,19 +169,28 @@ void Server::start() {
 }
 
 void Server::sendData() {
+	sf::Packet packet;
+	packet << OnlinePlayersData;
+	packet << static_cast<int>(m_connected_players.size());
+
+	for (const auto &pair: m_connected_players) {
+		auto &online_player = pair.second;
+		online_player->getPacket(OnlinePlayersData, packet);
+	}
+
+	broadCastToOnlinePlayers(packet);
 }
 
 // Send a packet to all players
 void Server::broadCastToOnlinePlayers(sf::Packet &packet) {
 	for (const auto &pair: m_connected_players) {
 		auto &online_player = pair.second;
-		m_socket.send(packet, online_player->ip_address, online_player->port);
+		m_socket.send(packet, online_player->getIpAdress(), online_player->getPort());
 	}
 }
 
 void Server::setCurrentPlayerData(float x, float y) {
-	m_connected_players[getId(sf::IpAddress::getLocalAddress(), 50000)]->x = x;
-	m_connected_players[getId(sf::IpAddress::getLocalAddress(), 50000)]->y = y;
+	m_connected_players[getId(sf::IpAddress::getLocalAddress(), 50000)]->setXY(x, y);
 }
 
 void Server::sendPacket(sf::Packet &packet, std::string &id) {

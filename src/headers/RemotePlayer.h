@@ -14,6 +14,8 @@ public:
                           sf::RenderWindow *window,
                           const std::string &name = "Remotec");
 
+    ~RemotePlayer() = default;
+
 private:
     void handleEventCurrent(const sf::Event &event) override;
 

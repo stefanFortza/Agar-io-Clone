@@ -35,6 +35,8 @@ public:
 
     Ptr detachChild(const SceneNode &node);
 
+    Ptr detachChild(const std::string &id);
+
     friend std::ostream &operator<<(std::ostream &os, const SceneNode &obj) {
         return os << " Name: " << obj.m_name;
     }

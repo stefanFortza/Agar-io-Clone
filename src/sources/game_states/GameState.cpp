@@ -13,6 +13,8 @@ GameState::GameState(GameStateManager *manager,
 
 void GameState::handleEvent(const sf::Event &event) {
     m_world.handleEvent(event);
+    if (event.type == sf::Event::Closed)
+        m_game_state_manager->getNetworkManager()->disconnect();
 }
 
 void GameState::render() {
@@ -35,4 +37,8 @@ void GameState::handlePlayerPosition(std::string &id, sf::Vector2f vector2) {
 
 void GameState::handleConnected(std::map<std::string, std::unique_ptr<OnlinePlayerData> > &map) {
     m_world.handleConnectedToServer(map);
+}
+
+void GameState::handlePlayerDisconected(const std::string &id) {
+    m_world.handlePlayerDisconected(id);
 }
