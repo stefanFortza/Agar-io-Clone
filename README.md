@@ -1,4 +1,4 @@
-# Nu primesc notă pentru că nu am pus titlu și descriere
+Joc online multiplayer in care cea mai mare bilă este pe primul loc.
 
 ### Important!
 Aveți voie cu cod generat de modele de limbaj la care nu ați contribuit semnificativ doar în folder-ul `generated`.
