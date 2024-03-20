@@ -4,7 +4,7 @@
 #include <iostream>
 #include "../headers/PlayerCamera.hpp"
 
-#include "../headers/utils/Vector2.h"
+#include "../headers/utils/Utils.h"
 
 
 PlayerCamera::PlayerCamera(GameStateManager *manager,

@@ -34,6 +34,12 @@ public:
 		this->y = y;
 	}
 
+	OnlinePlayerData(std::string id, float x = 0, float y = 0) {
+		setIdAndPort(id);
+		this->x = x;
+		this->y = y;
+	}
+
 	OnlinePlayerData(const OnlinePlayerData &other)
 		: m_ip_address(other.m_ip_address),
 		  m_port(other.m_port),
@@ -94,6 +100,10 @@ public:
 
 	void setXY(float x, float y);
 
+	void setIdAndPort(std::string id);
+
+	sf::Vector2f getXY();
+
 private:
 	sf::IpAddress m_ip_address;
 	int m_port;
@@ -102,7 +112,6 @@ private:
 
 class Server {
 private:
-	static const int MAX_PLAYERS = 2;
 	sf::UdpSocket m_socket;
 	std::map<std::string, std::unique_ptr<OnlinePlayerData> > m_connected_players;
 	sf::Packet m_packet;
@@ -124,7 +133,7 @@ public:
 
 	void broadCastToOnlinePlayers(sf::Packet &packet);
 
-	void setCurrentPlayerData(float x, float y);
+	void setCurrentServerPlayerData(float x, float y);
 
 	void sendPacket(sf::Packet &packet, std::string &id);
 

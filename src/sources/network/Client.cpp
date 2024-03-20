@@ -19,7 +19,7 @@ void Client::disconnect() {
 	m_socket.send(packet, "127.0.0.1", 50000);
 }
 
-Client::Client(GameState *game_state): m_game_state(game_state), m_client_id() {
+Client::Client(GameState *game_state): m_game_state(game_state) {
 	int port = 50001;
 	sf::Socket::Status status = m_socket.bind(50001);
 	m_socket.setBlocking(false);
@@ -28,12 +28,19 @@ Client::Client(GameState *game_state): m_game_state(game_state), m_client_id() {
 		status = m_socket.bind(port);
 	}
 	std::cout << "bound to port: " << port << '\n';
-	m_client_id = sf::IpAddress::getLocalAddress().toString() + ":" + std::to_string(port);
+	m_client_id = Server::getId(sf::IpAddress::getLocalAddress().toString(), port);
+	// m_client_id = sf::IpAddress::getLocalAddress().toString() + ":" + std::to_string(port);
+
+	std::unique_ptr<OnlinePlayerData> player = std::make_unique<
+		OnlinePlayerData>(sf::IpAddress::getLocalAddress(), 50000);
+
+	m_online_players[m_client_id] = std::move(player);
+
 	sf::Packet packet;
 	std::string type = "connected";
 
-	packet << PacketType::PlayerJoinedServer;
-	// std::string message = "Hi, I am " + sf::IpAddress::getLocalAddress().toString();
+	// Tell server i joined
+	packet << PlayerJoinedServer;
 	m_socket.send(packet, "127.0.0.1", 50000);
 }
 
@@ -69,13 +76,18 @@ void Client::receivePackets() {
 					auto player_port = id.substr(id.find(delimiter) + 1, id.length());
 
 					m_online_players[id] = std::make_unique<OnlinePlayerData>(
-						sf::IpAddress(adress), stoi(player_port), x, y);;
+						sf::IpAddress(adress), stoi(player_port), x, y);
 					// players[id] = ConnectedPlayer(sf::IpAddress(adress), stoi(port), x, y);
 
 					i--;
 				}
 
-				m_game_state->handleConnected(m_online_players);
+				std::unique_ptr<Command> command = std::make_unique<Command>(
+					CommandType::SetCurrnetWorldFromServer, m_online_players);
+
+				m_game_state->addCommand(std::move(command));
+
+				// m_game_state->handleConnected(m_online_players);
 
 				break;
 			}
@@ -87,10 +99,22 @@ void Client::receivePackets() {
 				}
 				break;
 			}
+
+			// When a player joins the current server
 			case PlayerJoinedServer: {
-				// std::string player_joined_id;
-				// m_packet >> player_joined_id;
-				// std::cout << player_joined_id << " joined\n";
+				std::string player_joined_id;
+				m_packet >> player_joined_id;
+				std::cout << player_joined_id << " joined\n";
+				m_online_players[player_joined_id] = std::make_unique<OnlinePlayerData>(
+					player_joined_id);
+
+				std::unique_ptr<Command> command = std::make_unique<Command>(
+					CommandType::CreatePlayer, m_online_players);
+
+				command->player_id = player_joined_id;
+
+				m_game_state->addCommand(std::move(command));
+
 				// m_game_state->handlePlayerJoined(player_joined_id);
 				break;
 			}
