@@ -11,10 +11,10 @@ RemotePlayer::RemotePlayer(GameStateManager *manager,
                            const std::string &name): PlayerBaseClass(manager, window, name) {
 }
 
-void RemotePlayer::handleEventCurrent(const sf::Event &event) {
+void RemotePlayer::handleEventCurrent(const sf::Event &/*event*/) {
 }
 
-void RemotePlayer::updateCurrent(const sf::Time &delta) {
+void RemotePlayer::updateCurrent(const sf::Time &/*delta*/) {
     // std::cout << "DSA\n";
 }
 

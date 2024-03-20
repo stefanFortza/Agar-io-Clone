@@ -3,7 +3,10 @@
 //
 
 #pragma once
+#include <queue>
+
 #include "State.hpp"
+#include "../Command.h"
 #include "../World.hpp"
 #include "SFML/Graphics/Text.hpp"
 
@@ -11,11 +14,10 @@
 class GameState :
 		public State {
 private:
-	// LocalPlayer localPlayer;
-	// NetPlayer netPlayer;
 	World m_world;
 	sf::RenderStates m_render_states;
 	bool gameEnd = false;
+	std::queue<std::unique_ptr<Command> > m_command_queue;
 	// sf::Text endText;
 
 	// void handleEnemyMove(sf::Packet &packet);
@@ -31,12 +33,7 @@ private:
 	// void gameEndEventHandle(const sf::Event &event);
 
 public:
-	GameState(GameStateManager *manager, sf::RenderWindow *window
-	          // std::unique_ptr<sf::TcpSocket> server,
-	          //          std::array<std::array<int, Level::MAP_WIDTH>, Level::MAP_HEIGHT> &logicArray,
-	          //          sf::Vector2i localPlayerPosition, PlayerAppearance localPlayerAppearance,
-	          //          sf::Vector2i netPlayerPosition, PlayerAppearance netPlayerAppearance
-	);
+	GameState(GameStateManager *manager, sf::RenderWindow *window);
 
 	void handleEvent(const sf::Event &event) override;
 
@@ -53,6 +50,8 @@ public:
 	void handleConnected(std::map<std::string, std::unique_ptr<OnlinePlayerData> > &map);
 
 	void handlePlayerDisconected(const std::string &id);
+
+	void addCommand(std::unique_ptr<Command> command);
 };
 
 

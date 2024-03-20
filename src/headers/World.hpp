@@ -23,6 +23,8 @@ public:
 
     void handlePlayerDisconected(const std::string &id);
 
+    void handleCommands(std::queue<std::unique_ptr<Command> > &commandQueue);
+
 private:
     Player *m_player;
     std::map<std::string, RemotePlayer *> m_remote_players;

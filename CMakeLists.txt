@@ -110,12 +110,10 @@ add_executable(${PROJECT_NAME}
         src/sources/World.cpp
         src/headers/World.hpp
         src/headers/Game.hpp
-        src/headers/SFML_Window.hpp
         src/headers/SceneNode.hpp
         src/headers/Player.hpp
         src/headers/PlayerCamera.hpp
         src/headers/SFMLMath.hpp
-        src/sources/SFML_Window.cpp
         src/sources/SceneNode.cpp
         src/sources/Player.cpp
         src/sources/Grid.cpp
@@ -133,8 +131,8 @@ add_executable(${PROJECT_NAME}
         src/headers/ui/Button.h
         src/sources/game_states/GameState.cpp
         src/headers/game_states/GameState.h
-        src/sources/utils/Vector2.cpp
-        src/headers/utils/Vector2.h
+        src/sources/utils/Utils.cpp
+        src/headers/utils/Utils.h
         src/sources/network/Server.cpp
         src/headers/network/Server.h
         src/sources/network/Client.cpp
@@ -145,6 +143,8 @@ add_executable(${PROJECT_NAME}
         src/headers/PlayerBaseClass.h
         src/sources/RemotePlayer.cpp
         src/headers/RemotePlayer.h
+        src/sources/Command.cpp
+        src/headers/Command.h
 )
 
 ###############################################################################

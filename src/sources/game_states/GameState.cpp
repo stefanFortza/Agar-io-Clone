@@ -6,12 +6,16 @@
 
 #include <iostream>
 
+#include "../../headers/Command.h"
+
 GameState::GameState(GameStateManager *manager,
                      sf::RenderWindow *window): State(manager, window),
                                                 m_world(manager, window) {
 }
 
 void GameState::handleEvent(const sf::Event &event) {
+    m_world.handleCommands(m_command_queue);
+
     m_world.handleEvent(event);
     if (event.type == sf::Event::Closed)
         m_game_state_manager->getNetworkManager()->disconnect();
@@ -41,4 +45,8 @@ void GameState::handleConnected(std::map<std::string, std::unique_ptr<OnlinePlay
 
 void GameState::handlePlayerDisconected(const std::string &id) {
     m_world.handlePlayerDisconected(id);
+}
+
+void GameState::addCommand(std::unique_ptr<Command> command) {
+    m_command_queue.push(std::move(command));
 }

@@ -16,8 +16,7 @@ World::World(GameStateManager *manager,
                                          m_player_camera(nullptr),
                                          m_world_size(50000, 50000),
                                          m_grid_color(220, 220, 220, 255),
-                                         m_origin(sf::Vector2f(60.f, 60.f)),
-                                         m_remote_players() {
+                                         m_origin(sf::Vector2f(60.f, 60.f)) {
     // Set children
     std::unique_ptr<Player> player(new Player(manager, window));
     m_player = player.get();
@@ -48,11 +47,11 @@ void World::updateCurrent(const sf::Time & /*delta*/) {
 void World::drawCurrent(sf::RenderTarget &target, sf::RenderStates states) const {
     target.setView(m_player_camera->getView());
 
-    for (const auto &remote_player: m_remote_players) {
-        // std::cout << remote_player.first << '\n';
-        // target.draw(*(remote_player.second), states);
-    }
-
+    // for (const auto &remote_player: m_remote_players) {
+    //     // std::cout << remote_player.first << '\n';
+    //     // target.draw(*(remote_player.second), states);
+    // }
+    //
     for (const auto &i: this->m_vertical_grid) {
         target.draw(i, states);
     }
@@ -74,37 +73,41 @@ void World::drawCurrent(sf::RenderTarget &target, sf::RenderStates states) const
     target.setView(m_player_camera->getView());
 }
 
-void World::handleEventCurrent(const sf::Event &event) {
+void World::handleEventCurrent(const sf::Event &/*event*/) {
 }
 
+
+// Handled by Server
 void World::setOnlinePlayersData() {
     auto &players = m_game_state_manager->getNetworkManager()->getServer()->getConnectedPlayers();
     for (auto &pair: players) {
         auto &player = pair.second;
         // std::cout << m_game_state_manager->getNetworkManager()->getServer()->getServerId() << '\n';
 
-        if (pair.first != m_game_state_manager->getNetworkManager()->getServer()->getServerId()) {
-            auto x = m_remote_players[pair.first]->getPosition().x;
-            auto y = m_remote_players[pair.first]->getPosition().y;
-            player->setXY(x, y);
-        } else {
-            auto x = m_player->getPosition().x;
-            auto y = m_player->getPosition().y;
-            player->setXY(x, y);
+        if (m_remote_players.contains(pair.first)) {
+            if (pair.first != m_game_state_manager->getNetworkManager()->getServer()->getServerId()) {
+                auto x = m_remote_players[pair.first]->getPosition().x;
+                auto y = m_remote_players[pair.first]->getPosition().y;
+                player->setXY(x, y);
+            } else {
+                auto x = m_player->getPosition().x;
+                auto y = m_player->getPosition().y;
+                player->setXY(x, y);
+            }
         }
     }
 }
 
 void World::handlePlayerJoined(std::string &id) {
-    std::unique_ptr<RemotePlayer> player =
-            std::make_unique<RemotePlayer>(m_game_state_manager, m_window, id);
-    m_remote_players[id] = player.get();
-    this->attachChild(std::move(player));
-    if (m_game_state_manager->getNetworkManager()->isServer()) {
-        sf::Packet packet;
-        // packet << PlayerJoinedServer;
-        // m_game_state_manager->getNetworkManager()->getServer()->sendPacket
-    }
+    // std::unique_ptr<RemotePlayer> player =
+    //         std::make_unique<RemotePlayer>(m_game_state_manager, m_window, id);
+    // m_remote_players[id] = player.get();
+    // this->attachChild(std::move(player));
+    // if (m_game_state_manager->getNetworkManager()->isServer()) {
+    //     sf::Packet packet;
+    //     // packet << PlayerJoinedServer;
+    //     // m_game_state_manager->getNetworkManager()->getServer()->sendPacket
+    // }
 }
 
 void World::handlePlayerPosition(std::string &id, sf::Vector2f vector2) {
@@ -115,7 +118,8 @@ void World::handlePlayerPosition(std::string &id, sf::Vector2f vector2) {
 
 void World::handleConnectedToServer(std::map<std::string, std::unique_ptr<OnlinePlayerData> > &map) {
     for (auto &pair: map) {
-        std::unique_ptr<RemotePlayer> player = std::make_unique<RemotePlayer>(
+        std::unique_ptr<RemotePlayer> player;
+        player = std::make_unique<RemotePlayer>(
             m_game_state_manager, m_window, pair.first);
         //
         m_remote_players[pair.first] = player.get();
@@ -132,6 +136,42 @@ void World::handleConnectedToServer(std::map<std::string, std::unique_ptr<Online
 void World::handlePlayerDisconected(const std::string &id) {
     detachChild(id);
     m_remote_players.erase(id);
+}
+
+void World::handleCommands(std::queue<std::unique_ptr<Command> > &commandQueue) {
+    while (!commandQueue.empty()) {
+        std::unique_ptr<Command> command = std::move(commandQueue.front());
+
+        switch (command->type) {
+            case CreatePlayer: {
+                std::unique_ptr<RemotePlayer> player =
+                        std::make_unique<RemotePlayer>(m_game_state_manager, m_window, command->player_id);
+                m_remote_players[command->player_id] = player.get();
+                this->attachChild(std::move(player));
+            }
+            break;
+            case SetCurrnetWorldFromServer:
+                for (auto &pair: command->player_data) {
+                    if (pair.first != m_game_state_manager->getNetworkManager()->getClient()->getClientId()) {
+                        std::unique_ptr<RemotePlayer> player;
+                        player = std::make_unique<RemotePlayer>(
+                            m_game_state_manager, m_window, pair.first);
+                        //
+                        m_remote_players[pair.first] = player.get();
+                        this->attachChild(std::move(player));
+                        // std::cout << "con\n";
+                        // if (m_game_state_manager->getNetworkManager()->isServer()) {
+                        //     sf::Packet packet;
+                        //     // packet << PlayerJoinedServer;
+                        //     // m_game_state_manager->getNetworkManager()->getServer()->sendPacket
+                        // }
+                    }
+                }
+                break;
+        }
+
+        commandQueue.pop();
+    }
 }
 
 void World::initializeGrid() {

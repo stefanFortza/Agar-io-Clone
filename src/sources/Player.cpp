@@ -64,7 +64,8 @@ void Player::updateCurrent(const sf::Time & /*delta*/) {
         packet << getPosition().x << getPosition().y;
         m_game_state_manager->getNetworkManager()->getClient()->sendPacket(packet);
     } else {
-        m_game_state_manager->getNetworkManager()->getServer()->setCurrentPlayerData(getPosition().x, getPosition().y);
+        m_game_state_manager->getNetworkManager()->getServer()->setCurrentServerPlayerData(
+            getPosition().x, getPosition().y);
     }
 }
 

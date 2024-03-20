@@ -30,6 +30,19 @@ void OnlinePlayerData::setXY(float x, float y) {
 	this->y = y;
 }
 
+void OnlinePlayerData::setIdAndPort(std::string id) {
+	std::string delimiter = ":";
+	auto adress = id.substr(0, id.find(delimiter));
+	auto port = id.substr(id.find(delimiter) + 1);
+
+	m_ip_address = adress;
+	m_port = stoi(port);
+}
+
+sf::Vector2f OnlinePlayerData::getXY() {
+	return {x, y};
+}
+
 Server::Server(GameState *game_state): m_game_state(game_state), m_server_id() {
 	m_socket.bind(50000);
 	m_socket.setBlocking(false);
@@ -116,6 +129,7 @@ void Server::start() {
 				packet_for_current_player << Connected;
 				packet_for_current_player << static_cast<int>(m_connected_players.size());
 
+
 				// Tell other players a player has joined
 				for (const auto &pair: m_connected_players) {
 					auto &online_player = pair.second;
@@ -134,26 +148,29 @@ void Server::start() {
 					online_player->getPacket(Connected, packet_for_current_player);
 				}
 
+
 				m_socket.send(packet_for_current_player, sender, port);
 
 				m_connected_players[id] = std::move(player);
-				m_game_state->handlePlayerJoined(id);
+
+
+				std::unique_ptr<Command> command = std::make_unique<Command>(
+					CommandType::CreatePlayer, m_connected_players);
+
+				command->player_id = id;
+
+				m_game_state->addCommand(std::move(command));
+
+				// m_game_state->handlePlayerJoined(id);
 				break;
 			}
-			case OnlinePlayersData: {
-				// sf::Packet packet;
-				// packet << OnlinePlayersData;
-				// packet << static_cast<int>(m_connected_players.size());
-				//
-				// for (const auto &pair: m_connected_players) {
-				// 	auto &online_player = pair.second;
-				// 	online_player->getPacket(OnlinePlayersData, packet);
-				// }
-				//
-				// broadCastToOnlinePlayers(packet);
+
+			// only for client
+			case OnlinePlayersData:
 				break;
-			}
-			case PlayerDisconected:
+
+			// Broadcast to all players a player disconnected
+			case PlayerDisconected: {
 				if (id != m_server_id) {
 					sf::Packet packet;
 					packet << PlayerDisconected << id;
@@ -163,6 +180,7 @@ void Server::start() {
 					broadCastToOnlinePlayers(packet);
 				}
 				break;
+			}
 		}
 	}
 	// }
@@ -189,7 +207,7 @@ void Server::broadCastToOnlinePlayers(sf::Packet &packet) {
 	}
 }
 
-void Server::setCurrentPlayerData(float x, float y) {
+void Server::setCurrentServerPlayerData(float x, float y) {
 	m_connected_players[getId(sf::IpAddress::getLocalAddress(), 50000)]->setXY(x, y);
 }
 
