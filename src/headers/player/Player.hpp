@@ -1,8 +1,8 @@
 #ifndef PLAYER_HPP
 #define PLAYER_HPP
 
-#include "Entity.hpp"
-#include "Game.hpp"
+#include "../Entity.hpp"
+#include "../Game.hpp"
 #include "PlayerBaseClass.h"
 
 class Player : public PlayerBaseClass {

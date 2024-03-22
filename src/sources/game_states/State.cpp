@@ -6,6 +6,7 @@
 
 
 State::State(GameStateManager *manager, sf::RenderWindow *window): m_game_state_manager(manager), m_window(window) {
+	m_roboto_font.loadFromFile("assets/roboto/Roboto-Light.ttf");
 }
 
 State::~State() = default;

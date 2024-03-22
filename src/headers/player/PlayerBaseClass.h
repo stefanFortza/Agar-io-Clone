@@ -4,7 +4,7 @@
 
 #ifndef PLAYERBASECLASS_H
 #define PLAYERBASECLASS_H
-#include "Entity.hpp"
+#include "../Entity.hpp"
 
 
 class PlayerBaseClass : public Entity {

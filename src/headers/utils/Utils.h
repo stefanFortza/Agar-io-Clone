@@ -4,7 +4,7 @@
 #pragma once
 #include <ostream>
 
-#include "../network/Server.h"
+#include "../network/ServerManager.h"
 #include "SFML/Network/Packet.hpp"
 #include "SFML/System/Vector2.hpp"
 
@@ -14,4 +14,10 @@ std::ostream &operator<<(std::ostream &os, const sf::Vector2<T> &vector) {
     return os;
 }
 
+namespace NetworkUtils {
+    std::string getIdFromAdressAndPort(sf::IpAddress sender, unsigned short port);
 
+    sf::IpAddress getAdressFromId(const std::string &id);
+
+    sf::Uint32 getPortFromId(const std::string &id);
+}

@@ -4,11 +4,14 @@
 #include "../headers/Game.hpp"
 #include <SFML/Graphics.hpp>
 #include "../headers/game_states/MenuState.hpp"
+#include "../headers/ui/AssetManager.h"
 
 Game::Game() : m_game_state_manager(new GameStateManager()),
                m_window(sf::VideoMode(1280, 720), "Agar.io") {
 	// m_window("Chapter 2", sf::Vector2u(1280, 720)) {
-	m_window.setFramerateLimit(10);
+
+	AssetManager::initialize();
+	m_window.setFramerateLimit(60);
 	m_game_state_manager->setState(std::make_unique<MenuState>(m_game_state_manager, &m_window));
 };
 

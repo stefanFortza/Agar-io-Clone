@@ -1,7 +1,7 @@
 //
 // Created by stefantacu on 07.03.2024.
 //
-#include "../headers/Player.hpp"
+#include "../headers/player/Player.hpp"
 #include <SFML/Graphics.hpp>
 #include "../headers/World.hpp"
 #include "../headers/PlayerCamera.hpp"
@@ -39,9 +39,9 @@ World::World(GameStateManager *manager,
 
 
 void World::updateCurrent(const sf::Time & /*delta*/) {
-    if (m_game_state_manager->getNetworkManager()->isServer()) {
-        setOnlinePlayersData();
-    }
+    // if (m_game_state_manager->getNetworkManager()->isServer()) {
+    //     setOnlinePlayersData();
+    // }
 }
 
 void World::drawCurrent(sf::RenderTarget &target, sf::RenderStates states) const {
@@ -78,25 +78,25 @@ void World::handleEventCurrent(const sf::Event &/*event*/) {
 
 
 // Handled by Server
-void World::setOnlinePlayersData() {
-    auto &players = m_game_state_manager->getNetworkManager()->getServer()->getConnectedPlayers();
-    for (auto &pair: players) {
-        auto &player = pair.second;
-        // std::cout << m_game_state_manager->getNetworkManager()->getServer()->getServerId() << '\n';
-
-        if (m_remote_players.contains(pair.first)) {
-            if (pair.first != m_game_state_manager->getNetworkManager()->getServer()->getServerId()) {
-                auto x = m_remote_players[pair.first]->getPosition().x;
-                auto y = m_remote_players[pair.first]->getPosition().y;
-                player->setXY(x, y);
-            } else {
-                auto x = m_player->getPosition().x;
-                auto y = m_player->getPosition().y;
-                player->setXY(x, y);
-            }
-        }
-    }
-}
+// void World::setOnlinePlayersData() {
+//     auto &players = m_game_state_manager->getNetworkManager()->getServer()->getConnectedPlayers();
+//     for (auto &pair: players) {
+//         auto &player = pair.second;
+//         // std::cout << m_game_state_manager->getNetworkManager()->getServer()->getServerId() << '\n';
+//
+//         if (m_remote_players.contains(pair.first)) {
+//             if (pair.first != m_game_state_manager->getNetworkManager()->getServer()->getServerId()) {
+//                 auto x = m_remote_players[pair.first]->getPosition().x;
+//                 auto y = m_remote_players[pair.first]->getPosition().y;
+//                 player->setXY(x, y);
+//             } else {
+//                 auto x = m_player->getPosition().x;
+//                 auto y = m_player->getPosition().y;
+//                 player->setXY(x, y);
+//             }
+//         }
+//     }
+// }
 
 void World::handlePlayerJoined(std::string &id) {
     // std::unique_ptr<RemotePlayer> player =
@@ -151,22 +151,22 @@ void World::handleCommands(std::queue<std::unique_ptr<Command> > &commandQueue) 
             }
             break;
             case SetCurrnetWorldFromServer:
-                for (auto &pair: command->player_data) {
-                    if (pair.first != m_game_state_manager->getNetworkManager()->getClient()->getClientId()) {
-                        std::unique_ptr<RemotePlayer> player;
-                        player = std::make_unique<RemotePlayer>(
-                            m_game_state_manager, m_window, pair.first);
-                        //
-                        m_remote_players[pair.first] = player.get();
-                        this->attachChild(std::move(player));
-                        // std::cout << "con\n";
-                        // if (m_game_state_manager->getNetworkManager()->isServer()) {
-                        //     sf::Packet packet;
-                        //     // packet << PlayerJoinedServer;
-                        //     // m_game_state_manager->getNetworkManager()->getServer()->sendPacket
-                        // }
-                    }
-                }
+                // for (auto &pair: command->player_data) {
+                //     if (pair.first != m_game_state_manager->getNetworkManager()->getClient()->getClientId()) {
+                //         std::unique_ptr<RemotePlayer> player;
+                //         player = std::make_unique<RemotePlayer>(
+                //             m_game_state_manager, m_window, pair.first);
+                //         //
+                //         m_remote_players[pair.first] = player.get();
+                //         this->attachChild(std::move(player));
+                //         // std::cout << "con\n";
+                //         // if (m_game_state_manager->getNetworkManager()->isServer()) {
+                //         //     sf::Packet packet;
+                //         //     // packet << PlayerJoinedServer;
+                //         //     // m_game_state_manager->getNetworkManager()->getServer()->sendPacket
+                //         // }
+                //     }
+                // }
                 break;
         }
 

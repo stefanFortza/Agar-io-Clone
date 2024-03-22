@@ -8,11 +8,13 @@
 
 #include <iostream>
 
+#include "../../headers/ui/AssetManager.h"
 
-Button::Button(std::function<void()> onClick, sf::Color defaultColor,
-               sf::Color markColor) : onClick(std::move(onClick)),
+
+Button::Button(std::function<void()> onClick,const sf::String& text, sf::Color defaultColor,
+               sf::Color markColor) : Label(text), onClick(std::move(onClick)),
                                       defaultColor(defaultColor), markColor(markColor) {
-	sf::Text::setFillColor(defaultColor);
+	setFillColor(defaultColor);
 }
 
 void Button::handleEvent(const sf::Event &event) {

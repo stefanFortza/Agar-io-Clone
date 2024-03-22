@@ -4,6 +4,8 @@
 
 #include "../../headers/game_states/GameStateManager.h"
 
+#include <iostream>
+
 GameStateManager::GameStateManager(): m_network_manager(nullptr) {
 } ;
 
@@ -28,8 +30,11 @@ void GameStateManager::setNetworkManager(std::unique_ptr<NetworkManager> network
 }
 
 void GameStateManager::receiveData() {
-	if (m_network_manager)
-		m_network_manager->receiveData();
+	if (ServerManager::getInstance().isRunning()) {
+		ServerManager::getInstance().receiveData();
+	} else if (ClientManager::getInstance().isRunning()) {
+		ClientManager::getInstance().receiveData();
+	}
 }
 
 void GameStateManager::sendData() {

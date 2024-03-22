@@ -23,7 +23,6 @@ public:
 	~MenuState() override;
 
 private:
-	sf::Font font;
 	Button playBtn;
 	Button hostBtn;
 

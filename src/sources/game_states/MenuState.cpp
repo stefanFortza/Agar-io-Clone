@@ -4,24 +4,24 @@
 
 #include "../../headers/game_states/MenuState.hpp"
 #include <iostream>
+
+#include "../../headers/game_states/ClientLobbyState.h"
 #include "../../headers/game_states/GameState.h"
-#include "../../headers/network/Server.h"
+#include "../../headers/game_states/LobbyState.h"
+#include "../../headers/game_states/ServerLobbyState.h"
+#include "../../headers/network/ServerManager.h"
 
 
 MenuState::MenuState(GameStateManager *manager,
                      sf::RenderWindow *window): State(manager, window),
                                                 playBtn([this] { play(); }),
                                                 hostBtn([this] { host(); }) {
-	// font.loadFromFile("assets/roboto/Roboto-Light.ttf");
-	font.loadFromFile("assets/roboto/Roboto-Light.ttf");
-	playBtn.setFont(font);
 	playBtn.setString("Play");
 	playBtn.setCharacterSize(50);
 	playBtn.setPosition(m_window->getSize().x / 2 - playBtn.getGlobalBounds().width / 2 + 100,
 	                    m_window->getSize().y / 2 - playBtn.getGlobalBounds().height / 2);
 
 
-	hostBtn.setFont(font);
 	hostBtn.setString("Host");
 	hostBtn.setCharacterSize(50);
 	hostBtn.setPosition(m_window->getSize().x / 2 - playBtn.getGlobalBounds().width / 2 - 100,
@@ -43,24 +43,14 @@ void MenuState::update(const sf::Time &/*deltaTime*/) {
 }
 
 void MenuState::host() {
-	// m_game_state_manager->setState(std::make_unique<ConnectionState>(manager, window));
-	changeState(true);
+	// auto server_manager = std::make_unique<ServerManager>();
+	auto lobby_state = std::make_unique<ServerLobbyState>(m_game_state_manager, m_window);
+	m_game_state_manager->setState(std::move(lobby_state));
 }
 
 void MenuState::play() {
-	changeState(false);
-}
-
-void MenuState::changeState(bool isServer) {
-	if (isServer)
-		std::cout << "host pressed" << '\n';
-	else
-		std::cout << "pressed" << '\n';
-
-	auto g_state = std::make_unique<GameState>(m_game_state_manager, m_window);
-	m_game_state_manager->setNetworkManager(
-		std::make_unique<NetworkManager>(m_game_state_manager, isServer, g_state.get()));
-	m_game_state_manager->setState(std::move(g_state));
+	auto lobby_state = std::make_unique<ClientLobbyState>(m_game_state_manager, m_window);
+	m_game_state_manager->setState(std::move(lobby_state));
 }
 
 MenuState::~MenuState() = default;

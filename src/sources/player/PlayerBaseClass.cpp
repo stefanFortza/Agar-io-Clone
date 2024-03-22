@@ -2,7 +2,7 @@
 // Created by stefantacu on 16.03.2024.
 //
 
-#include "../headers/PlayerBaseClass.h"
+#include "../../headers/player/PlayerBaseClass.h"
 
 
 PlayerBaseClass::PlayerBaseClass(GameStateManager *manager,

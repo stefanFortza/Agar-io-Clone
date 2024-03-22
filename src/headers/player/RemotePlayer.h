@@ -4,7 +4,7 @@
 
 #ifndef REMOTEPLAYER_H
 #define REMOTEPLAYER_H
-#include "game_states/GameStateManager.h"
+#include "../game_states/GameStateManager.h"
 #include "PlayerBaseClass.h"
 
 

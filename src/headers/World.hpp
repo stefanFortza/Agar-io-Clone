@@ -2,10 +2,10 @@
 #define WORLD_HPP
 #include <SFML/Graphics.hpp>
 #include "SceneNode.hpp"
-#include "Player.hpp"
+#include "player/Player.hpp"
 #include "PlayerCamera.hpp"
-#include "RemotePlayer.h"
-#include "network/Server.h"
+#include "player/RemotePlayer.h"
+#include "network/ServerManager.h"
 
 class OnlinePlayerData;
 class RemotePlayer;

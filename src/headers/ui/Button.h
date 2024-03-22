@@ -5,10 +5,12 @@
 #include <functional>
 #include <ostream>
 
+#include "Label.h"
+#include "../SceneNode.hpp"
 #include "SFML/Graphics.hpp"
 
 
-class Button : public sf::Text {
+class Button : public Label {
 private:
 	std::function<void()> onClick;
 	sf::Color defaultColor;
@@ -16,7 +18,8 @@ private:
 	bool focused = false;
 
 public:
-	Button(std::function<void()> onClick, sf::Color defaultColor = sf::Color::Black,
+	Button(std::function<void()> onClick, const sf::String &text = "Enter Text",
+	       sf::Color defaultColor = sf::Color::Black,
 	       sf::Color markColor = sf::Color::Blue);
 
 	void handleEvent(const sf::Event &event);

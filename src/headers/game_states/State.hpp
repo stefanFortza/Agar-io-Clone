@@ -13,6 +13,7 @@ class State {
 protected:
 	GameStateManager *m_game_state_manager;
 	sf::RenderWindow *m_window;
+	sf::Font m_roboto_font;
 
 public:
 	State(GameStateManager *manager, sf::RenderWindow *window);

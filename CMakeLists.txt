@@ -111,11 +111,11 @@ add_executable(${PROJECT_NAME}
         src/headers/World.hpp
         src/headers/Game.hpp
         src/headers/SceneNode.hpp
-        src/headers/Player.hpp
+        src/headers/player/Player.hpp
         src/headers/PlayerCamera.hpp
         src/headers/SFMLMath.hpp
         src/sources/SceneNode.cpp
-        src/sources/Player.cpp
+        src/sources/player/Player.cpp
         src/sources/Grid.cpp
         src/headers/Grid.hpp
         src/sources/Entity.cpp
@@ -133,18 +133,33 @@ add_executable(${PROJECT_NAME}
         src/headers/game_states/GameState.h
         src/sources/utils/Utils.cpp
         src/headers/utils/Utils.h
-        src/sources/network/Server.cpp
-        src/headers/network/Server.h
-        src/sources/network/Client.cpp
-        src/headers/network/Client.h
+        src/sources/network/ServerManager.cpp
+        src/headers/network/ServerManager.h
+        src/sources/network/ClientManager.cpp
+        src/headers/network/ClientManager.h
         src/sources/network/NetworkManager.cpp
         src/headers/network/NetworkManager.h
-        src/sources/PlayerBaseClass.cpp
-        src/headers/PlayerBaseClass.h
-        src/sources/RemotePlayer.cpp
-        src/headers/RemotePlayer.h
+        src/sources/player/PlayerBaseClass.cpp
+        src/headers/player/PlayerBaseClass.h
+        src/sources/player/RemotePlayer.cpp
+        src/headers/player/RemotePlayer.h
         src/sources/Command.cpp
         src/headers/Command.h
+        src/sources/game_states/LobbyState.cpp
+        src/headers/game_states/LobbyState.h
+        src/sources/game_states/ServerLobbyState.cpp
+        src/headers/game_states/ServerLobbyState.h
+        src/sources/game_states/ClientLobbyState.cpp
+        src/headers/game_states/ClientLobbyState.h
+        src/sources/ui/Label.cpp
+        src/headers/ui/Label.h
+        src/sources/ui/AssetManager.cpp
+        src/headers/ui/AssetManager.h
+        src/headers/utils/Signal.h
+        src/sources/utils/Signal.cpp
+        src/headers/network/OnlinePlayerData.h
+        src/sources/ui/LobbyPlayerLabels.cpp
+        src/sources/ui/LobbyPlayerLabels.h
 )
 
 ###############################################################################
