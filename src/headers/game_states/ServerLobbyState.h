@@ -5,6 +5,7 @@
 #ifndef SERVERLOBBYSTATE_H
 #define SERVERLOBBYSTATE_H
 #include "LobbyState.h"
+#include "../ui/Button.h"
 #include "../ui/Label.h"
 
 
@@ -15,8 +16,14 @@ private:
     std::unique_ptr<Label> m_lobby_label;
     std::vector<std::unique_ptr<Label> > player_labels;
     std::unique_ptr<LobbyPlayerLabels> m_player_labels;
+    std::unique_ptr<Button> m_start_game_button;
+
 
     void onPlayerJoinedLobby(const OnlinePlayerData &player);
+
+    void onStartButtonPressed();
+
+    void onGameStarted(const std::map<std::string, OnlinePlayerData> &player_data);
 
 public:
     ServerLobbyState(GameStateManager *manager,

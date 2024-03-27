@@ -23,6 +23,7 @@ class ClientManager {
 public:
     Signal<const std::map<std::string, OnlinePlayerData> &> onJoinedLobby;
     Signal<const OnlinePlayerData &> onPlayerJoinedLobby;
+    Signal<const std::map<std::string, OnlinePlayerData> &> onGameStarted;
 
 
     std::string getClientId();
@@ -39,11 +40,13 @@ public:
 
     void start();
 
+    void handleGameStarted();
+
     void receiveData();
 
     void sendData();
 
-    void sendPacket(sf::Packet &packet);
+    void sendPacketToServer(sf::Packet &packet);
 
 private:
     ClientManager();

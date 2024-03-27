@@ -14,6 +14,7 @@ Player::Player(GameStateManager *manager,
 Player::~Player() = default;
 
 void Player::handleEventCurrent(const sf::Event &event) {
+    // std::cout << "set vel\n";
     switch (event.type) {
         case sf::Event::MouseMoved: {
             dir = sf::Vector2f(static_cast<float>(event.mouseMove.x), static_cast<float>(event.mouseMove.y));
@@ -32,32 +33,31 @@ void Player::handleEventCurrent(const sf::Event &event) {
     }
 }
 
-void Player::updateCurrent(const sf::Time & /*delta*/) {
+void Player::updateCurrent(const sf::Time &delta) {
     // I need the window
-    // dir = sf::Vector2f(sf::Mouse::getPosition(m_context.getSFMLWindow()->getRenderWindow()));
-    // auto center = m_context.getSFMLWindow()->getRenderWindow().getSize() / 2U;
-    // auto center = sf::Vector2f(1280 / 2., 720 / 2.);
-    // dir -= center;
-    // sf::normalize(dir);
+    dir = sf::Vector2f(sf::Mouse::getPosition(*m_window));
+    // auto center = m_window->getSize() / 2U;
+    auto center = sf::Vector2f(1280 / 2., 720 / 2.);
+    dir -= center;
+    sf::normalize(dir);
 
     // std::cout << dir.x << " " << dir.y << '\n';
-    // dir = dir - m_context.getPlayerView().getCenter();
+    // dir = dir - m_window->getDefaultView().getCenter();
     // dir = dir - static_cast<sf::Vector2f>(center);
-    // sf::normalize(dir);
-    //
-    // dir *= delta.asSeconds() * m_speed;
+    sf::normalize(dir);
+
+    dir *= delta.asSeconds() * m_speed;
     // std::cout << center.x << " " << center.y << "\n";
-    // std::cout << dir.x << " " << dir.y << '\n';
+    std::cout << dir.x << " " << dir.y << '\n';
     // std::cout << sf::getLength(dir) << "\n";
-    // m_shape.setPosition(dir);
 
     // move m_transform instead of shape transform
     // m_player_shape.move(dir);
     // m_view.setCenter(getPosition());
     // m_context.getPlayerView().setCenter(getPosition());
 
-    // this->setVelocity(dir);
-    // this->move(dir);
+    this->setVelocity(dir);
+    this->move(dir);
     // if (!m_game_state_manager->getNetworkManager()->isServer()) {
     //     sf::Packet packet;
     //     packet << PacketType::PlayerPosition;

@@ -5,7 +5,7 @@
 #ifndef CLIENTLOBBYSTATE_H
 #define CLIENTLOBBYSTATE_H
 #include "LobbyState.h"
-#include "../../sources/ui/LobbyPlayerLabels.h"
+#include "../ui/LobbyPlayerLabels.h"
 #include "../ui/Label.h"
 
 
@@ -26,6 +26,8 @@ public:
     void onJoinLobby(const std::map<std::string, OnlinePlayerData> &player_data);
 
     void onPlayerJoinedLobby(const OnlinePlayerData &player);
+
+    void onGameStarted(const std::map<std::string, OnlinePlayerData> &player_data);
 };
 
 

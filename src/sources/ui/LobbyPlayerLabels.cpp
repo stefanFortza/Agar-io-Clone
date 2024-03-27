@@ -2,7 +2,7 @@
 // Created by stefantacu on 22.03.2024.
 //
 
-#include "LobbyPlayerLabels.h"
+#include "../../headers/ui/LobbyPlayerLabels.h"
 #include "../../headers/network/OnlinePlayerData.h"
 
 void LobbyPlayerLabels::handleEventCurrent(const sf::Event &event) {

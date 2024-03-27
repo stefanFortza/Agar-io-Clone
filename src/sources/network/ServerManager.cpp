@@ -62,7 +62,6 @@ void ServerManager::receiveData() {
 	m_packet.clear();
 	sf::IpAddress sender;
 	unsigned short port;
-	// std::string type = "";
 
 	while (m_socket.receive(m_packet, sender, port) == sf::Socket::Done) {
 		int type;
@@ -101,7 +100,6 @@ void ServerManager::receiveData() {
 			}
 		}
 	}
-	// }
 }
 
 void ServerManager::sendData() {
@@ -122,6 +120,11 @@ void ServerManager::handlePlayerJoinedLobby(std::string id) {
 	std::cout << "Player connected to server\n";
 	std::cout << id << ' ' << count++ << "\n";
 
+	// HeartBeat
+	sf::Packet packet;
+	packet << HeartBeat << id;
+	sendPacket(packet, id);
+
 	// add player to map
 	// OnlinePlayerData player_data_that_joined(id);
 	m_connected_players.emplace(std::piecewise_construct,
@@ -131,19 +134,41 @@ void ServerManager::handlePlayerJoinedLobby(std::string id) {
 	onPlayerJoinedLobby.emit(m_connected_players[id]);
 
 	// Broadcast to online players a player joined the lobby
-	sf::Packet packet;
+	packet.clear();
 	packet << PlayerJoinedLobby << m_connected_players[id];
 
 	broadCast(packet, id);
 
 	// Tell connected player current lobby data
 	sf::Packet packet_for_current_player;
-	packet_for_current_player << ConnectedToLobby;
-	packet_for_current_player << static_cast<int>(m_connected_players.size());
+	packet_for_current_player << ConnectedToLobby << static_cast<int>(m_connected_players.size());
 	for (auto &connected_player: m_connected_players)
 		packet_for_current_player << connected_player.second;
 
 	sendPacket(packet_for_current_player, id);
+}
+
+void ServerManager::setCurrentServerPlayerData(float x, float y) {
+	// m_connected_players[getId(sf::IpAddress::getLocalAddress(), 50000)]->setXY(x, y);
+}
+
+// Start the game from lobby state
+void ServerManager::startGame() {
+	sf::Packet packet;
+	packet << GameStarted;
+	broadCast(packet);
+	onGameStarted.emit(m_connected_players);
+}
+
+void ServerManager::sendPacket(sf::Packet &packet, const std::string &id) {
+	std::string delimiter = ":";
+	auto adress = id.substr(0, id.find(delimiter));
+	auto port = id.substr(id.find(delimiter) + 1);
+	m_socket.send(packet, adress, std::stoi(port));
+}
+
+bool ServerManager::isRunning() const {
+	return m_running;
 }
 
 // Send a packet to all players including server
@@ -151,7 +176,6 @@ void ServerManager::broadCastToOnlinePlayersAndServer(sf::Packet &packet) {
 	for (const auto &pair: m_connected_players)
 		sendPacket(packet, pair.first);
 }
-
 
 // Send a packet to all players without server and without id specified
 void ServerManager::broadCast(sf::Packet &packet, const std::string &id_to_ignore) {
@@ -167,20 +191,6 @@ void ServerManager::broadCastToOnlinePlayersWithoutServer(sf::Packet &packet) {
 			sendPacket(packet, pair.first);
 }
 
-void ServerManager::setCurrentServerPlayerData(float x, float y) {
-	// m_connected_players[getId(sf::IpAddress::getLocalAddress(), 50000)]->setXY(x, y);
-}
-
-void ServerManager::sendPacket(sf::Packet &packet, const std::string &id) {
-	std::string delimiter = ":";
-	auto adress = id.substr(0, id.find(delimiter));
-	auto port = id.substr(id.find(delimiter) + 1);
-	m_socket.send(packet, adress, std::stoi(port));
-}
-
 ServerManager::~ServerManager() {
 }
 
-bool ServerManager::isRunning() const {
-	return m_running;
-}

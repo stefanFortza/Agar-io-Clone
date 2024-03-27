@@ -25,12 +25,6 @@ void ClientManager::start() {
 	}
 	std::cout << "bound to port: " << port << '\n';
 	m_client_id = NetworkUtils::getIdFromAdressAndPort(sf::IpAddress::getLocalAddress().toString(), port);
-	// m_client_id = sf::IpAddress::getLocalAddress().toString() + ":" + std::to_string(port);
-
-	// std::unique_ptr<OnlinePlayerData> player = std::make_unique<
-	// 	OnlinePlayerData>(sf::IpAddress::getLocalAddress(), 50000);
-
-	// m_online_players[m_client_id] = std::move(player);
 
 	sf::Packet packet;
 	std::string type = "connected";
@@ -39,6 +33,7 @@ void ClientManager::start() {
 	packet << PlayerJoinedLobby;
 	m_socket.send(packet, "127.0.0.1", 50000);
 }
+
 
 std::string ClientManager::getClientId() {
 	return m_client_id;
@@ -55,29 +50,20 @@ ClientManager &ClientManager::getInstance() {
 	return instance;
 }
 
-bool ClientManager::isRunning() const {
-	return m_is_running;
-}
-
-void ClientManager::handlePlayerJoinedLobby(sf::Packet &packet) {
-	OnlinePlayerData player_data;
-	packet >> player_data;
-	std::cout << player_data.id << " joined\n";
-	m_online_players[player_data.id] = player_data;
-	onPlayerJoinedLobby.emit(player_data);
-}
 
 void ClientManager::receiveData() {
 	m_packet.clear();
-	// std::cout << "da\n";
 	sf::IpAddress sender;
 	unsigned short port;
-	// std::cout << "dsa";
 
 	while (m_socket.receive(m_packet, sender, port) == sf::Socket::Done) {
 		int type;
 		m_packet >> type;
 		switch (static_cast<PacketType>(type)) {
+			case HeartBeat: {
+				m_packet >> m_client_id;
+				break;
+			}
 			case ConnectedToLobby:
 				handleJoinedLobby(m_packet);
 				break;
@@ -127,17 +113,30 @@ void ClientManager::receiveData() {
 				// m_game_state->handlePlayerDisconected(id);
 				break;
 			}
+			case GameStarted:
+				handleGameStarted();
+				break;
+
 			default: ;
 		}
 		m_packet.clear();
 	}
 }
 
-void ClientManager::sendData() {
+
+void ClientManager::handlePlayerJoinedLobby(sf::Packet &packet) {
+	OnlinePlayerData player_data;
+	packet >> player_data;
+	std::cout << player_data.id << " joined\n";
+	m_online_players[player_data.id] = player_data;
+	onPlayerJoinedLobby.emit(player_data);
 }
 
-void ClientManager::sendPacket(sf::Packet &packet) {
-	m_socket.send(packet, "127.0.0.1", 50000);
+void ClientManager::handleGameStarted() {
+	onGameStarted.emit(m_online_players);
+}
+
+void ClientManager::sendData() {
 }
 
 void ClientManager::handleJoinedLobby(sf::Packet &packet) {
@@ -151,4 +150,12 @@ void ClientManager::handleJoinedLobby(sf::Packet &packet) {
 		i--;
 	}
 	onJoinedLobby.emit(m_online_players);
+}
+
+bool ClientManager::isRunning() const {
+	return m_is_running;
+}
+
+void ClientManager::sendPacketToServer(sf::Packet &packet) {
+	m_socket.send(packet, "127.0.0.1", 50000);
 }

@@ -14,11 +14,13 @@
 #include "../utils/Signal.h"
 
 enum PacketType:unsigned int {
+	HeartBeat,
 	ConnectedToLobby,
 	PlayerPosition,
 	PlayerJoinedLobby,
 	OnlinePlayersData,
-	PlayerDisconected
+	PlayerDisconected,
+	GameStarted
 };
 
 class ServerManager;
@@ -35,6 +37,7 @@ public:
 	static ServerManager &getInstance();
 
 	Signal<const OnlinePlayerData &> onPlayerJoinedLobby;
+	Signal<std::map<std::string, OnlinePlayerData> &> onGameStarted;
 
 	const std::map<std::string, OnlinePlayerData> &getConnectedPlayers() const;
 
@@ -61,6 +64,8 @@ public:
 	~ServerManager();
 
 	bool isRunning() const;
+
+	void startGame();
 
 private:
 	explicit ServerManager();

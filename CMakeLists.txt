@@ -159,7 +159,13 @@ add_executable(${PROJECT_NAME}
         src/sources/utils/Signal.cpp
         src/headers/network/OnlinePlayerData.h
         src/sources/ui/LobbyPlayerLabels.cpp
-        src/sources/ui/LobbyPlayerLabels.h
+        src/headers/ui/LobbyPlayerLabels.h
+        src/sources/game_states/ServerGameState.cpp
+        src/headers/game_states/ServerGameState.h
+        src/sources/game_states/ClientGameState.cpp
+        src/headers/game_states/ClientGameState.h
+        src/sources/player/PlayersManager.cpp
+        src/headers/player/PlayersManager.h
 )
 
 ###############################################################################

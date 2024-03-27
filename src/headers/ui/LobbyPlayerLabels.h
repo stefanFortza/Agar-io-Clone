@@ -4,9 +4,9 @@
 
 #ifndef LOBBYPLAYERLABELS_H
 #define LOBBYPLAYERLABELS_H
-#include "../../headers/SceneNode.hpp"
-#include "../../headers/network/OnlinePlayerData.h"
-#include "../../headers/ui/Label.h"
+#include "../SceneNode.hpp"
+#include "../network/OnlinePlayerData.h"
+#include "Label.h"
 
 
 struct OnlinePlayerData;

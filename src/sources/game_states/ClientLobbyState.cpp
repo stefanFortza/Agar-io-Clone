@@ -4,6 +4,8 @@
 
 #include "../../headers/game_states/ClientLobbyState.h"
 
+#include "../../headers/game_states/ClientGameState.h"
+
 ClientLobbyState::ClientLobbyState(GameStateManager *manager, sf::RenderWindow *window): LobbyState(manager, window),
     m_lobby_label("Client label") {
     ClientManager::getInstance().onJoinedLobby.connect(
@@ -13,6 +15,10 @@ ClientLobbyState::ClientLobbyState(GameStateManager *manager, sf::RenderWindow *
     ClientManager::getInstance().onPlayerJoinedLobby.connect([this](const OnlinePlayerData &player_data) {
         onPlayerJoinedLobby(player_data);
     });
+    ClientManager::getInstance().onGameStarted.connect(
+        [this](const std::map<std::string, OnlinePlayerData> &player_data) {
+            onGameStarted(player_data);
+        });
 
     m_lobby_label.setPosition(100, 100);
     m_player_labels = std::make_unique<LobbyPlayerLabels>(manager, window);
@@ -40,4 +46,9 @@ void ClientLobbyState::onJoinLobby(const std::map<std::string, OnlinePlayerData>
 void ClientLobbyState::onPlayerJoinedLobby(const OnlinePlayerData &player) {
     std::cout << "player joined\n";
     m_player_labels->addPlayer(player);
+}
+
+void ClientLobbyState::onGameStarted(const std::map<std::string, OnlinePlayerData> &player_data) {
+    auto client_game_state = std::make_unique<ClientGameState>(m_game_state_manager, m_window, player_data);
+    m_game_state_manager->setState(std::move(client_game_state));
 }

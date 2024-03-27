@@ -11,7 +11,7 @@
 #include "../../headers/ui/AssetManager.h"
 
 
-Button::Button(std::function<void()> onClick,const sf::String& text, sf::Color defaultColor,
+Button::Button(std::function<void()> onClick, const sf::String &text, sf::Color defaultColor,
                sf::Color markColor) : Label(text), onClick(std::move(onClick)),
                                       defaultColor(defaultColor), markColor(markColor) {
 	setFillColor(defaultColor);
