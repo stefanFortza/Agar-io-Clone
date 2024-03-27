@@ -14,7 +14,11 @@ public:
                           sf::RenderWindow *window,
                           const std::string &name = "Remotec");
 
+    sf::FloatRect getBounds() override;
+
     ~RemotePlayer() = default;
+
+    void setData(const OnlinePlayerData &player_data);
 
 private:
     void handleEventCurrent(const sf::Event &event) override;

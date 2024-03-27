@@ -24,11 +24,16 @@ public:
     Signal<const std::map<std::string, OnlinePlayerData> &> onJoinedLobby;
     Signal<const OnlinePlayerData &> onPlayerJoinedLobby;
     Signal<const std::map<std::string, OnlinePlayerData> &> onGameStarted;
+    Signal<const OnlinePlayerData &> onPlayerDataReceived;
+    Signal<sf::Vector2f> onFoodSpawned;
+    Signal<int> onFoodEaten;
 
 
     std::string getClientId();
 
     void disconnect();
+
+    void sendLocalDataToServer(OnlinePlayerData data);
 
     static ClientManager &getInstance();
 
@@ -41,6 +46,10 @@ public:
     void start();
 
     void handleGameStarted();
+
+    void handleFoodSpawned(sf::Vector2f pos);
+
+    void handleFoodEaten(int id);
 
     void receiveData();
 

@@ -118,8 +118,8 @@ add_executable(${PROJECT_NAME}
         src/sources/player/Player.cpp
         src/sources/Grid.cpp
         src/headers/Grid.hpp
-        src/sources/Entity.cpp
-        src/headers/Entity.hpp
+        src/sources/entitities/Entity.cpp
+        src/headers/entities/Entity.hpp
         src/sources/PlayerCamera.cpp
         src/sources/game_states/GameStateManager.cpp
         src/headers/game_states/GameStateManager.h
@@ -166,6 +166,12 @@ add_executable(${PROJECT_NAME}
         src/headers/game_states/ClientGameState.h
         src/sources/player/PlayersManager.cpp
         src/headers/player/PlayersManager.h
+        src/sources/entitities/FoodManager.cpp
+        src/headers/entities/FoodManager.h
+        src/sources/entitities/Food.cpp
+        src/headers/entities/Food.h
+        src/sources/entitities/Collidable.cpp
+        src/headers/entities/Collidable.h
 )
 
 ###############################################################################

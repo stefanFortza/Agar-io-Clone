@@ -5,9 +5,13 @@
 #ifndef SERVERGAMESTATE_H
 #define SERVERGAMESTATE_H
 #include "GameState.h"
+#include "../utils/Utils.h"
 
 
 class ServerGameState : public GameState {
+private:
+	std::vector<Collidable *> m_collidables;
+
 public:
 	ServerGameState(GameStateManager *manager, sf::RenderWindow *window,
 	                const std::map<std::string, OnlinePlayerData> &players_data);
@@ -16,7 +20,13 @@ public:
 
 	void render() override;
 
+	void checkCollisions();
+
 	void update(const sf::Time &deltaTime) override;
+
+	void onFoodSpawned(Food *food);
+
+	void handlePlayerDataReceived(const OnlinePlayerData &player_data);
 
 	// void handlePlayerJoined(std::string &id);
 

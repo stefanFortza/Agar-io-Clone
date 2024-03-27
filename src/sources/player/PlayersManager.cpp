@@ -35,14 +35,31 @@ void PlayersManager::updateCurrent(const sf::Time &delta) {
     }
 }
 
+OnlinePlayerData PlayersManager::getLocalPlayerDataWithoutId() {
+    return m_player->getData();
+}
+
 void PlayersManager::drawCurrent(sf::RenderTarget &target, sf::RenderStates states) const {
     if (m_player)
-        target.draw(*m_player);
+        target.draw(*m_player, states);
     for (auto &player_pair: m_remote_players) {
-        target.draw(player_pair.second);
+        target.draw(player_pair.second, states);
     }
 }
 
 void PlayersManager::setCamera(PlayerCamera &player_camera) {
     player_camera.setTarget(m_player.get());
+}
+
+void PlayersManager::handlePlayerDataReceived(const OnlinePlayerData &player_data) {
+    m_remote_players.at(player_data.id).setData(player_data);
+}
+
+std::vector<Collidable *> PlayersManager::getCollidables() {
+    std::vector<Collidable *> vec;
+    vec.push_back(m_player.get());
+    for (auto &pair: m_remote_players) {
+        vec.push_back(&pair.second);
+    }
+    return vec;
 }

@@ -28,16 +28,6 @@ const std::string &ServerManager::getServerId() const {
 	return m_server_id;
 }
 
-// void OnlinePlayerData::setIdAndPort(std::string id) {
-// 	std::string delimiter = ":";
-// 	auto adress = id.substr(0, id.find(delimiter));
-// 	auto port = id.substr(id.find(delimiter) + 1);
-//
-// 	ip_address = adress;
-// 	port = stoi(port);
-// }
-
-
 int count = 0;
 
 void ServerManager::start() {
@@ -98,23 +88,23 @@ void ServerManager::receiveData() {
 				}
 				break;
 			}
+			case HeartBeat:
+				break;
+			case PlayerData: {
+				OnlinePlayerData data;
+				m_packet >> data;
+				handlePlayerData(data);
+				break;
+			}
+
+			case GameStarted:
+				break;
 		}
 	}
 }
 
 void ServerManager::sendData() {
-	// sf::Packet packet;
-	// packet << OnlinePlayersData;
-	// packet << static_cast<int>(m_connected_players.size());
-	//
-	// for (const auto &pair: m_connected_players) {
-	// 	auto &online_player = pair.second;
-	// 	online_player->getPacket(OnlinePlayersData, packet);
-	// }
-	//
-	// broadCastToOnlinePlayersAndServer(packet);
 }
-
 
 void ServerManager::handlePlayerJoinedLobby(std::string id) {
 	std::cout << "Player connected to server\n";
@@ -148,6 +138,14 @@ void ServerManager::handlePlayerJoinedLobby(std::string id) {
 	sendPacket(packet_for_current_player, id);
 }
 
+void ServerManager::handlePlayerData(const OnlinePlayerData &data) {
+	onPlayerDataReceived.emit(data);
+
+	m_packet.clear();
+	m_packet << PlayerData << data;
+	broadCast(m_packet, data.id);
+}
+
 void ServerManager::setCurrentServerPlayerData(float x, float y) {
 	// m_connected_players[getId(sf::IpAddress::getLocalAddress(), 50000)]->setXY(x, y);
 }
@@ -158,6 +156,24 @@ void ServerManager::startGame() {
 	packet << GameStarted;
 	broadCast(packet);
 	onGameStarted.emit(m_connected_players);
+}
+
+void ServerManager::broadCastLocalData(const OnlinePlayerData &data) {
+	m_packet.clear();
+	m_packet << PlayerData << data;
+	broadCast(m_packet);
+}
+
+void ServerManager::broadCastFoodSpawned(sf::Vector2f pos) {
+	m_packet.clear();
+	m_packet << FoodSpawned << pos;
+	broadCast(m_packet);
+}
+
+void ServerManager::broadcastFoodEaten(Food *food) {
+	m_packet.clear();
+	m_packet << FoodEaten << food->getId();
+	broadCast(m_packet);
 }
 
 void ServerManager::sendPacket(sf::Packet &packet, const std::string &id) {

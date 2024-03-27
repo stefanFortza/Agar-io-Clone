@@ -4,10 +4,6 @@
 
 #include "../../headers/utils/Utils.h"
 
-std::ostream &operator<<(std::ostream &os, const sf::Vector2f &vector) {
-	os << "(" << vector.x << ", " << vector.y << ")";
-	return os;
-}
 
 std::string NetworkUtils::getIdFromAdressAndPort(sf::IpAddress sender, unsigned short port) {
 	std::string id(sender.toString());

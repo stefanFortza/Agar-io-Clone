@@ -6,7 +6,7 @@
 #define ENTITY_H
 
 #include <SFML/Graphics.hpp>
-#include "../headers/SceneNode.hpp"
+#include "../../headers/SceneNode.hpp"
 
 class SceneNode;
 

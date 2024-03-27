@@ -4,10 +4,11 @@
 
 #ifndef PLAYERBASECLASS_H
 #define PLAYERBASECLASS_H
-#include "../Entity.hpp"
+#include "../entities/Collidable.h"
+#include "../entities/Entity.hpp"
 
 
-class PlayerBaseClass : public Entity {
+class PlayerBaseClass : public Entity, public Collidable {
 public:
     explicit PlayerBaseClass(GameStateManager *manager,
                              sf::RenderWindow *window,

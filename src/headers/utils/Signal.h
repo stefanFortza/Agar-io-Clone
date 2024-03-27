@@ -23,7 +23,7 @@ public:
     }
 
     void emit(Args... args) {
-        std::cout << "emit\n";
+        // std::cout << "emit\n";
         for (const auto &slot: m_slots) {
             slot(args...);
         }

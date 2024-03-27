@@ -45,6 +45,7 @@ void ClientManager::disconnect() {
 	m_socket.send(packet, "127.0.0.1", 50000);
 }
 
+
 ClientManager &ClientManager::getInstance() {
 	static ClientManager instance;
 	return instance;
@@ -68,11 +69,6 @@ void ClientManager::receiveData() {
 				handleJoinedLobby(m_packet);
 				break;
 			case PlayerPosition: {
-				float x, y;
-				m_packet >> x >> y;
-				// if (m_online_players.count(sender_id)) {
-				// 	// m_game_state->handlePlayerPosition(sender_id, sf::Vector2f(x, y));
-				// }
 				break;
 			}
 			// When a player joins the current server
@@ -81,28 +77,6 @@ void ClientManager::receiveData() {
 				break;
 			}
 			case OnlinePlayersData: {
-				int i;
-				m_packet >> i;
-				std::cout << "Got online players data\n" << i;
-				while (i) {
-					std::string id;
-					float x, y;
-					m_packet >> id >> x >> y;
-					if (id != m_client_id) {
-						std::string delimiter = ":";
-						auto adress = id.substr(0, id.find(delimiter));
-						auto player_port = id.substr(id.find(delimiter) + 1, id.length());
-
-						if (m_online_players.contains(id)) {
-							// m_online_players[id]->setXY(x, y);
-							// players[id] = ConnectedPlayer(sf::IpAddress(adress), stoi(port), x, y);
-							// m_game_state->handlePlayerPosition(id, sf::Vector2f(x, y));
-						}
-					}
-
-					i--;
-				}
-
 				break;
 			}
 			case PlayerDisconected: {
@@ -117,12 +91,35 @@ void ClientManager::receiveData() {
 				handleGameStarted();
 				break;
 
+			case PlayerData: {
+				OnlinePlayerData data;
+				m_packet >> data;
+				onPlayerDataReceived.emit(data);
+				break;
+			}
+			case FoodSpawned: {
+				sf::Vector2f pos;
+				m_packet >> pos;
+				handleFoodSpawned(pos);
+				break;
+			}
+			case FoodEaten: {
+				int id;
+				m_packet >> id;
+				handleFoodEaten(id);
+				break;
+			}
 			default: ;
 		}
 		m_packet.clear();
 	}
 }
 
+void ClientManager::sendLocalDataToServer(OnlinePlayerData data) {
+	m_packet.clear();
+	m_packet << PlayerData << data;
+	sendPacketToServer(m_packet);
+}
 
 void ClientManager::handlePlayerJoinedLobby(sf::Packet &packet) {
 	OnlinePlayerData player_data;
@@ -134,6 +131,14 @@ void ClientManager::handlePlayerJoinedLobby(sf::Packet &packet) {
 
 void ClientManager::handleGameStarted() {
 	onGameStarted.emit(m_online_players);
+}
+
+void ClientManager::handleFoodSpawned(sf::Vector2f pos) {
+	onFoodSpawned.emit(pos);
+}
+
+void ClientManager::handleFoodEaten(int id) {
+	onFoodEaten.emit(id);
 }
 
 void ClientManager::sendData() {

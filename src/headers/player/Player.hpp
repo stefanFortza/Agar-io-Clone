@@ -1,7 +1,6 @@
 #ifndef PLAYER_HPP
 #define PLAYER_HPP
 
-#include "../Entity.hpp"
 #include "../Game.hpp"
 #include "PlayerBaseClass.h"
 
@@ -12,6 +11,12 @@ public:
                     const std::string &name = "Player");
 
     ~Player();
+
+    OnlinePlayerData getData();
+
+    sf::FloatRect getBounds() override;
+
+    void eatFood(Food *food);
 
     // const sf::View &GetView() const;
 

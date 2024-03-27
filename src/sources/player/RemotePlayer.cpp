@@ -11,6 +11,14 @@ RemotePlayer::RemotePlayer(GameStateManager *manager,
                            const std::string &name): PlayerBaseClass(manager, window, name) {
 }
 
+sf::FloatRect RemotePlayer::getBounds() {
+    return m_player_shape.getGlobalBounds();
+}
+
+void RemotePlayer::setData(const OnlinePlayerData &player_data) {
+    setPosition(player_data.x, player_data.y);
+}
+
 void RemotePlayer::handleEventCurrent(const sf::Event &/*event*/) {
 }
 

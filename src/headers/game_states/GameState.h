@@ -8,7 +8,9 @@
 #include "../Grid.hpp"
 // #include "../World.hpp"
 #include "../PlayerCamera.hpp"
+#include "../entities/FoodManager.h"
 #include "../player/PlayersManager.h"
+
 
 class PlayersManager;
 
@@ -18,6 +20,7 @@ protected:
 	std::unique_ptr<PlayersManager> m_players_manager;
 	Grid m_grid;
 	PlayerCamera m_player_camera;
+	FoodManager m_food_manager;
 	const std::map<std::string, OnlinePlayerData> &players_data;
 	bool gameEnd = false;
 

@@ -4,7 +4,7 @@
 
 #include <utility>
 
-#include "../headers/Entity.hpp"
+#include "../../headers/entities/Entity.hpp"
 
 
 Entity::Entity(GameStateManager *manager, sf::RenderWindow *window,

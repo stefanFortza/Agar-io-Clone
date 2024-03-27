@@ -19,8 +19,11 @@ enum PacketType:unsigned int {
 	PlayerPosition,
 	PlayerJoinedLobby,
 	OnlinePlayersData,
+	PlayerData,
 	PlayerDisconected,
-	GameStarted
+	GameStarted,
+	FoodSpawned,
+	FoodEaten
 };
 
 class ServerManager;
@@ -38,6 +41,7 @@ public:
 
 	Signal<const OnlinePlayerData &> onPlayerJoinedLobby;
 	Signal<std::map<std::string, OnlinePlayerData> &> onGameStarted;
+	Signal<const OnlinePlayerData &> onPlayerDataReceived;
 
 	const std::map<std::string, OnlinePlayerData> &getConnectedPlayers() const;
 
@@ -46,6 +50,8 @@ public:
 	void start();
 
 	void handlePlayerJoinedLobby(std::string id);
+
+	void handlePlayerData(const OnlinePlayerData &data);
 
 	void receiveData();
 
@@ -66,6 +72,12 @@ public:
 	bool isRunning() const;
 
 	void startGame();
+
+	void broadCastLocalData(const OnlinePlayerData &data);
+
+	void broadCastFoodSpawned(sf::Vector2f pos);
+
+	void broadcastFoodEaten(Food *food);
 
 private:
 	explicit ServerManager();

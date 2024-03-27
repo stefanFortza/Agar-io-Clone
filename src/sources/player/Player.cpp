@@ -13,6 +13,23 @@ Player::Player(GameStateManager *manager,
 
 Player::~Player() = default;
 
+OnlinePlayerData Player::getData() {
+    OnlinePlayerData data;
+    data.x = getWorldPosition().x;
+    data.y = getWorldPosition().y;
+    return data;
+}
+
+sf::FloatRect Player::getBounds() {
+    return getWorldTransform().transformRect(m_player_shape.getGlobalBounds());
+}
+
+void Player::eatFood(Food *food) {
+    m_player_shape.setRadius(m_player_shape.getRadius() + 5.f);
+    auto x = m_player_shape.getRadius();
+    m_player_shape.setOrigin(sf::Vector2f(x, x));
+}
+
 void Player::handleEventCurrent(const sf::Event &event) {
     // std::cout << "set vel\n";
     switch (event.type) {
@@ -34,39 +51,6 @@ void Player::handleEventCurrent(const sf::Event &event) {
 }
 
 void Player::updateCurrent(const sf::Time &delta) {
-    // I need the window
-    dir = sf::Vector2f(sf::Mouse::getPosition(*m_window));
-    // auto center = m_window->getSize() / 2U;
-    auto center = sf::Vector2f(1280 / 2., 720 / 2.);
-    dir -= center;
-    sf::normalize(dir);
-
-    // std::cout << dir.x << " " << dir.y << '\n';
-    // dir = dir - m_window->getDefaultView().getCenter();
-    // dir = dir - static_cast<sf::Vector2f>(center);
-    sf::normalize(dir);
-
-    dir *= delta.asSeconds() * m_speed;
-    // std::cout << center.x << " " << center.y << "\n";
-    std::cout << dir.x << " " << dir.y << '\n';
-    // std::cout << sf::getLength(dir) << "\n";
-
-    // move m_transform instead of shape transform
-    // m_player_shape.move(dir);
-    // m_view.setCenter(getPosition());
-    // m_context.getPlayerView().setCenter(getPosition());
-
-    this->setVelocity(dir);
-    this->move(dir);
-    // if (!m_game_state_manager->getNetworkManager()->isServer()) {
-    //     sf::Packet packet;
-    //     packet << PacketType::PlayerPosition;
-    //     packet << getPosition().x << getPosition().y;
-    //     m_game_state_manager->getNetworkManager()->getClient()->sendPacket(packet);
-    // } else {
-    //     m_game_state_manager->getNetworkManager()->getServer()->setCurrentServerPlayerData(
-    //         getPosition().x, getPosition().y);
-    // }
 }
 
 void Player::drawCurrent(sf::RenderTarget &target, sf::RenderStates states) const {

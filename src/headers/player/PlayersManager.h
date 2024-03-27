@@ -25,10 +25,17 @@ public:
 
     void setCamera(PlayerCamera &player_camera);
 
+    void handlePlayerDataReceived(const OnlinePlayerData &player_data);
+
+    std::vector<Collidable *> getCollidables();
+
+    OnlinePlayerData getLocalPlayerDataWithoutId();
+
 private:
     void handleEventCurrent(const sf::Event &event) override;
 
     void updateCurrent(const sf::Time &delta) override;
+
 
     void drawCurrent(sf::RenderTarget &target, sf::RenderStates states) const override;
 

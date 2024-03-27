@@ -6,7 +6,7 @@
 #include <SFML/Graphics.hpp>
 #include <utility>
 #include "../headers/SceneNode.hpp"
-#include "../headers/Entity.hpp"
+#include "../headers/entities/Entity.hpp"
 #include "../headers/Game.hpp"
 
 SceneNode::SceneNode(GameStateManager *manager,
