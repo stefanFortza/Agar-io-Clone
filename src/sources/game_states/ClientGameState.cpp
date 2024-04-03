@@ -17,8 +17,8 @@ ClientGameState::ClientGameState(GameStateManager *manager, sf::RenderWindow *wi
         onFoodSpawned(pos);
     });
 
-    ClientManager::getInstance().onFoodEaten.connect([this](int id) {
-        onFoodEaten(id);
+    ClientManager::getInstance().onFoodEaten.connect([this](OnlinePlayerData data, int id) {
+        onFoodEaten(data, id);
     });
 
     m_players_manager->setCamera(m_player_camera);
@@ -47,7 +47,7 @@ void ClientGameState::update(const sf::Time &deltaTime) {
     m_food_manager.update(deltaTime);
 
     // send local data to server
-    OnlinePlayerData data = m_players_manager->getLocalPlayerDataWithoutId();
+    OnlinePlayerData data = m_players_manager->getLocalPlayerData();
     data.id = ClientManager::getInstance().getClientId();
     ClientManager::getInstance().sendLocalDataToServer(data);
 }
@@ -63,8 +63,10 @@ void ClientGameState::onFoodSpawned(sf::Vector2f pos) {
     m_food_manager.spawn(pos);
 }
 
-void ClientGameState::onFoodEaten(int id) {
+void ClientGameState::onFoodEaten(OnlinePlayerData data, int id) {
     m_food_manager.destroyFood(id);
+    m_players_manager->playerAteFood(data);
+    std::cout << data << " ate food\n";
 }
 
 void ClientGameState::handlePlayerDisconected(const std::string &id) {

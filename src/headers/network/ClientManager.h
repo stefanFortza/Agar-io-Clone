@@ -26,7 +26,7 @@ public:
     Signal<const std::map<std::string, OnlinePlayerData> &> onGameStarted;
     Signal<const OnlinePlayerData &> onPlayerDataReceived;
     Signal<sf::Vector2f> onFoodSpawned;
-    Signal<int> onFoodEaten;
+    Signal<const OnlinePlayerData &, int> onFoodEaten;
 
 
     std::string getClientId();
@@ -49,7 +49,7 @@ public:
 
     void handleFoodSpawned(sf::Vector2f pos);
 
-    void handleFoodEaten(int id);
+    void handleFoodEaten(OnlinePlayerData data, int id);
 
     void receiveData();
 

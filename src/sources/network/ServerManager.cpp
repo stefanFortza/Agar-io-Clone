@@ -170,9 +170,9 @@ void ServerManager::broadCastFoodSpawned(sf::Vector2f pos) {
 	broadCast(m_packet);
 }
 
-void ServerManager::broadcastFoodEaten(Food *food) {
+void ServerManager::broadcastFoodEaten(OnlinePlayerData data, Food *food) {
 	m_packet.clear();
-	m_packet << FoodEaten << food->getId();
+	m_packet << FoodEaten << food->getId() << data;
 	broadCast(m_packet);
 }
 

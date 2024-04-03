@@ -7,28 +7,12 @@
 #include <SFML/Graphics.hpp>
 
 Player::Player(GameStateManager *manager,
-               sf::RenderWindow *window,
-               const std::string &name): PlayerBaseClass(manager, window, name) {
+               sf::RenderWindow *window, std::string net_id,
+               const std::string &name): PlayerBaseClass(manager, window, net_id, name) {
 }
 
 Player::~Player() = default;
 
-OnlinePlayerData Player::getData() {
-    OnlinePlayerData data;
-    data.x = getWorldPosition().x;
-    data.y = getWorldPosition().y;
-    return data;
-}
-
-sf::FloatRect Player::getBounds() {
-    return getWorldTransform().transformRect(m_player_shape.getGlobalBounds());
-}
-
-void Player::eatFood(Food *food) {
-    m_player_shape.setRadius(m_player_shape.getRadius() + 5.f);
-    auto x = m_player_shape.getRadius();
-    m_player_shape.setOrigin(sf::Vector2f(x, x));
-}
 
 void Player::handleEventCurrent(const sf::Event &event) {
     // std::cout << "set vel\n";
@@ -56,5 +40,6 @@ void Player::updateCurrent(const sf::Time &delta) {
 void Player::drawCurrent(sf::RenderTarget &target, sf::RenderStates states) const {
     // target.draw(m_shape, transform);
     target.draw(m_player_shape, states);
+    target.draw(m_hitbox, states);
 }
 

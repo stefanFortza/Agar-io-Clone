@@ -7,18 +7,10 @@
 class Player : public PlayerBaseClass {
 public:
     explicit Player(GameStateManager *manager,
-                    sf::RenderWindow *window,
+                    sf::RenderWindow *window, std::string net_id,
                     const std::string &name = "Player");
 
     ~Player();
-
-    OnlinePlayerData getData();
-
-    sf::FloatRect getBounds() override;
-
-    void eatFood(Food *food);
-
-    // const sf::View &GetView() const;
 
 private:
     void handleEventCurrent(const sf::Event &event) override;

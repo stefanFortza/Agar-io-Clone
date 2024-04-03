@@ -105,8 +105,9 @@ void ClientManager::receiveData() {
 			}
 			case FoodEaten: {
 				int id;
-				m_packet >> id;
-				handleFoodEaten(id);
+				OnlinePlayerData data;
+				m_packet >> id >> data;
+				handleFoodEaten(data, id);
 				break;
 			}
 			default: ;
@@ -137,8 +138,8 @@ void ClientManager::handleFoodSpawned(sf::Vector2f pos) {
 	onFoodSpawned.emit(pos);
 }
 
-void ClientManager::handleFoodEaten(int id) {
-	onFoodEaten.emit(id);
+void ClientManager::handleFoodEaten(OnlinePlayerData data, int id) {
+	onFoodEaten.emit(data, id);
 }
 
 void ClientManager::sendData() {

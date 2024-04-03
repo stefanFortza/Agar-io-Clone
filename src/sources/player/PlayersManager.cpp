@@ -10,11 +10,11 @@ PlayersManager::PlayersManager(GameStateManager *manager, sf::RenderWindow *wind
                                const std::string &name): SceneNode(manager, window, name) {
     for (auto &player_pair: players_data) {
         if (player_pair.first == local_player_id) {
-            m_player = std::make_unique<Player>(manager, window);
+            m_player = std::make_unique<Player>(manager, window, player_pair.first);
         } else {
             m_remote_players.emplace(std::piecewise_construct,
                                      std::forward_as_tuple(player_pair.first),
-                                     std::forward_as_tuple(manager, window));
+                                     std::forward_as_tuple(manager, window, player_pair.first));
         }
     }
 }
@@ -35,8 +35,15 @@ void PlayersManager::updateCurrent(const sf::Time &delta) {
     }
 }
 
-OnlinePlayerData PlayersManager::getLocalPlayerDataWithoutId() {
+OnlinePlayerData PlayersManager::getLocalPlayerData() {
     return m_player->getData();
+}
+
+void PlayersManager::playerAteFood(const OnlinePlayerData &data) {
+    if (ClientManager::getInstance().getClientId() == data.id)
+        m_player->setData(data);
+    else if (m_remote_players.contains(data.id))
+        m_remote_players.at(data.id).setData(data);
 }
 
 void PlayersManager::drawCurrent(sf::RenderTarget &target, sf::RenderStates states) const {
@@ -52,7 +59,8 @@ void PlayersManager::setCamera(PlayerCamera &player_camera) {
 }
 
 void PlayersManager::handlePlayerDataReceived(const OnlinePlayerData &player_data) {
-    m_remote_players.at(player_data.id).setData(player_data);
+    if (m_remote_players.contains(player_data.id))
+        m_remote_players.at(player_data.id).setData(player_data);
 }
 
 std::vector<Collidable *> PlayersManager::getCollidables() {

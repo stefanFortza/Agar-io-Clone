@@ -56,8 +56,7 @@ void ServerGameState::update(const sf::Time &deltaTime) {
 
 
     // BroadCast local data
-    OnlinePlayerData data = m_players_manager->getLocalPlayerDataWithoutId();
-    data.id = ServerManager::getInstance().getServerId();
+    OnlinePlayerData data = m_players_manager->getLocalPlayerData();
     ServerManager::getInstance().broadCastLocalData(data);
 }
 
@@ -72,15 +71,15 @@ void ServerGameState::handlePlayerDataReceived(const OnlinePlayerData &player_da
 void ServerGameState::checkCollisions() {
     for (int i = 0; i < m_collidables.size(); i++) {
         for (int j = i + 1; j < m_collidables.size(); j++) {
-            if (dynamic_cast<Player *>(m_collidables[i]) && dynamic_cast<Food *>(m_collidables[j])) {
+            if (dynamic_cast<PlayerBaseClass *>(m_collidables[i]) && dynamic_cast<Food *>(m_collidables[j])) {
                 if (m_collidables[i]->getBounds().intersects(m_collidables[j]->getBounds())) {
                     // std::cout << "Ate food\n";
                     // std::cout << m_collidables[i]->getBounds().getPosition() << '\n';
-                    auto player = dynamic_cast<Player *>(m_collidables[i]);
+                    auto player = dynamic_cast<PlayerBaseClass *>(m_collidables[i]);
                     auto food = dynamic_cast<Food *>(m_collidables[j]);
 
-                    ServerManager::getInstance().broadcastFoodEaten(food);
                     player->eatFood(food);
+                    ServerManager::getInstance().broadcastFoodEaten(player->getData(), food);
                     m_collidables.erase(m_collidables.begin() + j);
                     m_food_manager.destroyFood(food);
                 }

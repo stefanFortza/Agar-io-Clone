@@ -77,7 +77,7 @@ public:
 
 	void broadCastFoodSpawned(sf::Vector2f pos);
 
-	void broadcastFoodEaten(Food *food);
+	void broadcastFoodEaten(OnlinePlayerData data, Food *food);
 
 private:
 	explicit ServerManager();

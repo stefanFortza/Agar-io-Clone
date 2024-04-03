@@ -23,7 +23,7 @@ private:
 
     void onFoodSpawned(sf::Vector2f pos);
 
-    void onFoodEaten(int id);
+    void onFoodEaten(OnlinePlayerData data, int id);
 
     void handlePlayerDisconected(const std::string &id);
 };

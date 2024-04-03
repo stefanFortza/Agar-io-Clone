@@ -29,7 +29,9 @@ public:
 
     std::vector<Collidable *> getCollidables();
 
-    OnlinePlayerData getLocalPlayerDataWithoutId();
+    OnlinePlayerData getLocalPlayerData();
+
+    void playerAteFood(const OnlinePlayerData &data);
 
 private:
     void handleEventCurrent(const sf::Event &event) override;
