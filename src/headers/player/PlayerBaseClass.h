@@ -4,9 +4,11 @@
 
 #ifndef PLAYERBASECLASS_H
 #define PLAYERBASECLASS_H
+
 #include "../entities/Collidable.h"
 #include "../entities/Entity.hpp"
 #include "../network/OnlinePlayerData.h"
+#include "../utils/Signal.h"
 
 
 class Food;
@@ -27,6 +29,8 @@ public:
     void eatFood(Food *food);
 
     void setSize(float size);
+
+    Signal<float> onSizeChanged;
 
 protected:
     sf::CircleShape m_player_shape;

@@ -7,10 +7,10 @@
 
 PlayerBaseClass::PlayerBaseClass(GameStateManager *manager,
                                  sf::RenderWindow *window, std::string net_id,
-                                 const std::string &name): Entity(manager, window, name),
-                                                           m_player_shape(50.f),
-                                                           m_hitbox(10.f),
-                                                           m_net_id(net_id) {
+                                 const std::string &name) : Entity(manager, window, name),
+                                                            m_player_shape(50.f),
+                                                            m_hitbox(10.f),
+                                                            m_net_id(net_id) {
     // auto center = sf::Vector2f(static_cast<float>(m_window->getSize().x),
     // static_cast<float>(m_window->getSize().y)) / 2.f;
     // m_player_shape.setOrigin(center);
@@ -48,5 +48,6 @@ void PlayerBaseClass::setSize(float size) {
     m_player_shape.setRadius(size);
     auto x = m_player_shape.getRadius();
     m_player_shape.setOrigin(sf::Vector2f(x, x));
+    onSizeChanged.emit(size);
 }
 
