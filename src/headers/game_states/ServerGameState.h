@@ -26,7 +26,7 @@ public:
 
 	void onFoodSpawned(Food *food);
 
-	void handlePlayerDataReceived(const OnlinePlayerData &player_data);
+	void onPlayerDataReceived(const OnlinePlayerData &player_data);
 
 	// void handlePlayerJoined(std::string &id);
 
@@ -34,7 +34,7 @@ public:
 
 	// void handleConnected(std::map<std::string, std::unique_ptr<OnlinePlayerData> > &map);
 
-	void handlePlayerDisconected(const std::string &id);
+	void onPlayerDisconnected(const std::string &id);
 };
 
 

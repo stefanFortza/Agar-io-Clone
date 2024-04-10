@@ -27,6 +27,8 @@ public:
     Signal<const OnlinePlayerData &> onPlayerDataReceived;
     Signal<sf::Vector2f> onFoodSpawned;
     Signal<const OnlinePlayerData &, int> onFoodEaten;
+    Signal<const OnlinePlayerData &, const OnlinePlayerData &> onPlayerEaten;
+    Signal<const std::string &> onPlayerDisconnected;
 
 
     std::string getClientId();
@@ -50,6 +52,10 @@ public:
     void handleFoodSpawned(sf::Vector2f pos);
 
     void handleFoodEaten(OnlinePlayerData data, int id);
+
+    void handlePlayerEaten(const OnlinePlayerData &player1, const OnlinePlayerData &player2);
+
+    void handlePlayerDisconnected(const std::string &id);
 
     void receiveData();
 

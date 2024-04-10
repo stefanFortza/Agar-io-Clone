@@ -3,6 +3,8 @@
 //
 
 #include "../../headers/game_states/GameStateManager.h"
+#include "../../headers/network/ServerManager.h"
+#include "../../headers/network/ClientManager.h"
 
 #include <iostream>
 

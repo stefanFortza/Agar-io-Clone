@@ -7,6 +7,7 @@
 #include "Player.hpp"
 #include "RemotePlayer.h"
 #include "../SceneNode.hpp"
+#include "../PlayerCamera.hpp"
 #include <memory>
 
 
@@ -32,6 +33,10 @@ public:
     OnlinePlayerData getLocalPlayerData();
 
     void playerAteFood(const OnlinePlayerData &data);
+
+    void playerAtePlayer(const OnlinePlayerData &player1, const OnlinePlayerData &player2);
+
+    void disconnectPlayer(const std::string &id);
 
 private:
     void handleEventCurrent(const sf::Event &event) override;

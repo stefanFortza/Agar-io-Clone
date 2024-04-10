@@ -3,6 +3,7 @@
 //
 
 #include"../../headers/player/PlayersManager.h"
+#include"../../headers/network/ClientManager.h"
 
 PlayersManager::PlayersManager(GameStateManager *manager, sf::RenderWindow *window,
                                const std::map<std::string, OnlinePlayerData> &players_data,
@@ -22,6 +23,7 @@ PlayersManager::PlayersManager(GameStateManager *manager, sf::RenderWindow *wind
 void PlayersManager::handleEventCurrent(const sf::Event &event) {
     if (m_player)
         m_player->handleEvent(event);
+
     for (auto &player_pair: m_remote_players) {
         player_pair.second.handleEvent(event);
     }
@@ -30,13 +32,16 @@ void PlayersManager::handleEventCurrent(const sf::Event &event) {
 void PlayersManager::updateCurrent(const sf::Time &delta) {
     if (m_player)
         m_player->update(delta);
+
     for (auto &player_pair: m_remote_players) {
         player_pair.second.update(delta);
     }
 }
 
 OnlinePlayerData PlayersManager::getLocalPlayerData() {
-    return m_player->getData();
+    if (m_player)
+        return m_player->getData();
+    return OnlinePlayerData();
 }
 
 void PlayersManager::playerAteFood(const OnlinePlayerData &data) {
@@ -44,6 +49,28 @@ void PlayersManager::playerAteFood(const OnlinePlayerData &data) {
         m_player->setData(data);
     else if (m_remote_players.contains(data.id))
         m_remote_players.at(data.id).setData(data);
+}
+
+void PlayersManager::playerAtePlayer(const OnlinePlayerData &player1, const OnlinePlayerData &player2) {
+    if (NetworkManager::getLocalId() == player1.id) {
+        m_player->setData(player1);
+        m_player->eatPlayer(player2);
+        m_remote_players.at(player2.id).die();
+    } else if (NetworkManager::getLocalId() == player2.id) {
+        // current player was eaten
+        m_remote_players.at(player1.id).setData(player1);
+        m_remote_players.at(player1.id).eatPlayer(player2);
+        m_player->die();
+    } else {
+        m_remote_players.at(player1.id).setData(player1);
+        m_remote_players.at(player1.id).eatPlayer(player2);
+        m_remote_players.at(player2.id).die();
+    }
+}
+
+void PlayersManager::disconnectPlayer(const std::string &id) {
+    if (m_remote_players.contains(id))
+        m_remote_players.erase(id);
 }
 
 void PlayersManager::drawCurrent(sf::RenderTarget &target, sf::RenderStates states) const {

@@ -3,12 +3,14 @@
 //
 
 #include "../../headers/game_states/ClientGameState.h"
+#include "../../headers/network/ClientManager.h"
 
 ClientGameState::ClientGameState(GameStateManager *manager, sf::RenderWindow *window,
                                  const std::map<std::string, OnlinePlayerData> &players_data): GameState(
     manager, window, players_data) {
     m_players_manager = std::make_unique<PlayersManager>(manager, window, players_data,
                                                          ClientManager::getInstance().getClientId());
+
     ClientManager::getInstance().onPlayerDataReceived.connect([this](const OnlinePlayerData &player_data) {
         onPlayerDataReceived(player_data);
     });
@@ -21,6 +23,14 @@ ClientGameState::ClientGameState(GameStateManager *manager, sf::RenderWindow *wi
         onFoodEaten(data, id);
     });
 
+    ClientManager::getInstance().onPlayerEaten.connect([this](const OnlinePlayerData &p1, const OnlinePlayerData &p2) {
+        onPlayerEaten(p1, p2);
+    });
+
+    ClientManager::getInstance().onPlayerDisconnected.connect([this](const std::string &id) {
+        onPlayerDisconnected(id);
+    });
+
     m_players_manager->setCamera(m_player_camera);
 }
 
@@ -29,8 +39,9 @@ void ClientGameState::handleEvent(const sf::Event &event) {
     m_player_camera.handleEvent(event);
     m_grid.handleEvent(event);
     m_food_manager.handleEvent(event);
+
     if (event.type == sf::Event::Closed)
-        m_game_state_manager->getNetworkManager()->disconnect();
+        ClientManager::getInstance().disconnect();
 }
 
 void ClientGameState::render() {
@@ -69,5 +80,14 @@ void ClientGameState::onFoodEaten(OnlinePlayerData data, int id) {
     std::cout << data << " ate food\n";
 }
 
+void ClientGameState::onPlayerEaten(const OnlinePlayerData &player1, const OnlinePlayerData &player2) {
+    std::cout << "player eaten" << player1 << player2;
+    m_players_manager->playerAtePlayer(player1, player2);
+}
+
 void ClientGameState::handlePlayerDisconected(const std::string &id) {
+}
+
+void ClientGameState::onPlayerDisconnected(const std::string &id) {
+    m_players_manager->disconnectPlayer(id);
 }

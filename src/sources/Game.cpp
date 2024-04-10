@@ -25,28 +25,11 @@ void Game::handleInput() {
 }
 
 void Game::update() {
-	// m_window.update(); // Update window events.
-
 	m_game_state_manager->update(m_elapsed);
 }
 
 void Game::render() {
-	// m_window.clear();
-	// m_window.beginDraw(); // Clear.
-	//
-	// m_game_state_manager->render();
-	//
-	// m_window.endDraw(); // Display.
-	// m_window.display();
 }
-
-// SFML_Window *Game::getWindow() {
-// 	// return &m_window;
-// }
-
-// bool Game::isWindowOpen() const {
-//     return m_window.isOpen();
-// }
 
 sf::Time Game::getElapsed() const { return m_elapsed; }
 

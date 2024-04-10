@@ -172,6 +172,7 @@ add_executable(${PROJECT_NAME}
         src/headers/entities/Food.h
         src/sources/entitities/Collidable.cpp
         src/headers/entities/Collidable.h
+        src/headers/utils/Constants.h
 )
 
 ###############################################################################

@@ -4,20 +4,17 @@
 
 #ifndef NETWORKMANAGER_H
 #define NETWORKMANAGER_H
-#include <memory>
-#include "ClientManager.h"
-#include "ServerManager.h"
-#include "../utils/Signal.h"
+#include <string>
 
 class GameStateManager;
 class GameState;
-class ServerManager;
 class ClientManager;
 
 enum NetworkManagerState {
     ServerState,
     ClientState
 };
+
 
 class NetworkManager {
 private:
@@ -31,6 +28,12 @@ public:
     void receiveData();
 
     void sendData();
+
+    static void setLocalId(const std::string &id);
+
+    static std::string &getLocalId();
+
+    static std::string m_local_id;
 };
 
 

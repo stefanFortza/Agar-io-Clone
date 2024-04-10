@@ -10,11 +10,13 @@
 
 
 struct OnlinePlayerData {
-	explicit OnlinePlayerData(std::string id = "", float x = 0, float y = 0, float size = 50)
+	explicit OnlinePlayerData(std::string id = "", float x = 0, float y = 0, float size = 50,
+	                          bool is_accelerating = false)
 		: id(std::move(id)),
 		  x(x),
 		  y(y),
-		  size(size) {
+		  size(size),
+		  is_accelerating(is_accelerating) {
 	}
 
 	// std::string getIpAdress() {
@@ -31,12 +33,12 @@ struct OnlinePlayerData {
 	// }
 
 	friend sf::Packet &operator>>(sf::Packet &packet, OnlinePlayerData &obj) {
-		packet >> obj.id >> obj.x >> obj.y >> obj.size;
+		packet >> obj.id >> obj.x >> obj.y >> obj.size >> obj.is_accelerating;
 		return packet;
 	}
 
 	friend sf::Packet &operator<<(sf::Packet &packet, const OnlinePlayerData &obj) {
-		packet << obj.id << obj.x << obj.y << obj.size;
+		packet << obj.id << obj.x << obj.y << obj.size << obj.is_accelerating;
 
 		return packet;
 	}
@@ -53,14 +55,16 @@ struct OnlinePlayerData {
 		: id(other.id),
 		  x(other.x),
 		  y(other.y),
-		  size(other.size) {
+		  size(other.size),
+		  is_accelerating(other.is_accelerating) {
 	}
 
 	OnlinePlayerData(OnlinePlayerData &&other) noexcept
 		: id(std::move(other.id)),
 		  x(other.x),
 		  y(other.y),
-		  size(other.size) {
+		  size(other.size),
+		  is_accelerating(other.is_accelerating) {
 	}
 
 	OnlinePlayerData &operator=(const OnlinePlayerData &other) {
@@ -71,6 +75,7 @@ struct OnlinePlayerData {
 		y = other.y;
 		y = other.y;
 		size = other.size;
+		is_accelerating = other.is_accelerating;
 		return *this;
 	}
 
@@ -81,6 +86,7 @@ struct OnlinePlayerData {
 		x = other.x;
 		y = other.y;
 		size = other.size;
+		is_accelerating = other.is_accelerating;
 		return *this;
 	}
 
@@ -88,6 +94,7 @@ struct OnlinePlayerData {
 	std::string id;
 	float x, y;
 	float size;
+	bool is_accelerating;
 };
 
 #endif //ONLINEPLAYERDATA_H

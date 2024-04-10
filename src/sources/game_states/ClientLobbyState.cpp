@@ -3,8 +3,9 @@
 //
 
 #include "../../headers/game_states/ClientLobbyState.h"
-
 #include "../../headers/game_states/ClientGameState.h"
+#include "../../headers/network/ClientManager.h"
+
 
 ClientLobbyState::ClientLobbyState(GameStateManager *manager, sf::RenderWindow *window): LobbyState(manager, window),
     m_lobby_label("Client label") {

@@ -37,6 +37,7 @@ void ServerManager::start() {
 	m_socket.setBlocking(false);
 
 	m_server_id = NetworkUtils::getIdFromAdressAndPort(sf::IpAddress::getLocalAddress(), 50000);
+	NetworkManager::setLocalId(m_server_id);
 
 	m_connected_players.emplace(std::piecewise_construct,
 	                            std::forward_as_tuple(m_server_id),
@@ -82,9 +83,8 @@ void ServerManager::receiveData() {
 					sf::Packet packet;
 					packet << PlayerDisconected << id;
 					m_connected_players.erase(id);
-					// delete m_connected_players[id];
-					// m_game_state->handlePlayerDisconected(id);
-					broadCastToOnlinePlayersAndServer(packet);
+					onPlayerDisconnected.emit(id);
+					broadCast(packet, id);
 				}
 				break;
 			}
@@ -173,6 +173,12 @@ void ServerManager::broadCastFoodSpawned(sf::Vector2f pos) {
 void ServerManager::broadcastFoodEaten(OnlinePlayerData data, Food *food) {
 	m_packet.clear();
 	m_packet << FoodEaten << food->getId() << data;
+	broadCast(m_packet);
+}
+
+void ServerManager::broadCastPlayerEaten(const OnlinePlayerData &player1, const OnlinePlayerData &player2) {
+	m_packet.clear();
+	m_packet << PlayerEaten << player1 << player2;
 	broadCast(m_packet);
 }
 

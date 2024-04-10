@@ -35,7 +35,10 @@ void PlayerCamera::handleEventCurrent(const sf::Event &event) {
             } else {
                 m_view.zoom(1.02);
             }
+
+            break;
         }
+        default: break;;
     }
 }
 
@@ -45,9 +48,11 @@ void PlayerCamera::onPlayerSizeChanged(const float &size) {
 }
 
 void PlayerCamera::updateCurrent(const sf::Time &/*delta*/) {
-    auto pos = m_target->getWorldPosition();
-    m_view.setCenter(pos);
-    // std::cout << pos << '\n';
+    if (m_target) {
+        auto pos = m_target->getWorldPosition();
+        m_view.setCenter(pos);
+        // std::cout << pos << '\n';
+    }
 }
 
 void PlayerCamera::drawCurrent(sf::RenderTarget &/*target*/, sf::RenderStates /*states*/) const {

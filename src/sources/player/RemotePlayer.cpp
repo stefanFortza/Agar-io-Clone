@@ -15,11 +15,13 @@ RemotePlayer::RemotePlayer(GameStateManager *manager,
 void RemotePlayer::handleEventCurrent(const sf::Event &/*event*/) {
 }
 
-void RemotePlayer::updateCurrent(const sf::Time &/*delta*/) {
+void RemotePlayer::updateCurrent(const sf::Time &delta) {
+    PlayerBaseClass::updateCurrent(delta);
     // std::cout << "DSA\n";
 }
 
 void RemotePlayer::drawCurrent(sf::RenderTarget &target, sf::RenderStates states) const {
     target.draw(m_player_shape, states);
     target.draw(m_hitbox, states);
+    target.draw(m_hit_sprite, states);
 }

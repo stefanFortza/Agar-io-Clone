@@ -25,6 +25,7 @@ void ClientManager::start() {
 	}
 	std::cout << "bound to port: " << port << '\n';
 	m_client_id = NetworkUtils::getIdFromAdressAndPort(sf::IpAddress::getLocalAddress().toString(), port);
+	NetworkManager::setLocalId(m_client_id);
 
 	sf::Packet packet;
 	std::string type = "connected";
@@ -41,8 +42,9 @@ std::string ClientManager::getClientId() {
 
 void ClientManager::disconnect() {
 	sf::Packet packet;
-	packet << PlayerDisconected << getClientId();
-	m_socket.send(packet, "127.0.0.1", 50000);
+	packet << PlayerDisconected << m_online_players.at(NetworkManager::getLocalId());
+	this->sendPacketToServer(packet);
+	// m_socket.send(packet, "127.0.0.1", 50000);
 }
 
 
@@ -63,6 +65,7 @@ void ClientManager::receiveData() {
 		switch (static_cast<PacketType>(type)) {
 			case HeartBeat: {
 				m_packet >> m_client_id;
+				NetworkManager::setLocalId(m_client_id);
 				break;
 			}
 			case ConnectedToLobby:
@@ -82,7 +85,7 @@ void ClientManager::receiveData() {
 			case PlayerDisconected: {
 				std::string id;
 				m_packet >> id;
-				m_online_players.erase(id);
+				handlePlayerDisconnected(id);
 				// delete m_online_players[id];
 				// m_game_state->handlePlayerDisconected(id);
 				break;
@@ -108,6 +111,12 @@ void ClientManager::receiveData() {
 				OnlinePlayerData data;
 				m_packet >> id >> data;
 				handleFoodEaten(data, id);
+				break;
+			}
+			case PlayerEaten: {
+				OnlinePlayerData player1, player2;
+				m_packet >> player1 >> player2;
+				handlePlayerEaten(player1, player2);
 				break;
 			}
 			default: ;
@@ -140,6 +149,14 @@ void ClientManager::handleFoodSpawned(sf::Vector2f pos) {
 
 void ClientManager::handleFoodEaten(OnlinePlayerData data, int id) {
 	onFoodEaten.emit(data, id);
+}
+
+void ClientManager::handlePlayerEaten(const OnlinePlayerData &player1, const OnlinePlayerData &player2) {
+	onPlayerEaten.emit(player1, player2);
+}
+
+void ClientManager::handlePlayerDisconnected(const std::string &id) {
+	onPlayerDisconnected.emit(id);
 }
 
 void ClientManager::sendData() {

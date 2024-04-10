@@ -9,16 +9,18 @@
 
 class Grid : public SceneNode {
 private:
-    float m_grid_spacing = 100.f;
     sf::Vector2u m_windowSize;
-    sf::Vector2i m_world_size;
-    sf::RectangleShape m_vertical_grid[100];
-    sf::RectangleShape m_horizontal_grid[100];
+    sf::RectangleShape m_vertical_grid[10000];
+    sf::RectangleShape m_horizontal_grid[10000];
     sf::Color m_grid_color;
     sf::RectangleShape m_origin;
+    sf::RectangleShape m_world_outline;
 
 public:
     Grid(GameStateManager *manager, sf::RenderWindow *window, const std::string &name = "Grid");
+
+    static int m_grid_spacing;
+    static sf::Vector2i m_world_size;
 
 private:
     void handleEventCurrent(const sf::Event &event) override;

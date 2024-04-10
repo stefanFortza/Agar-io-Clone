@@ -7,6 +7,7 @@
 #include "LobbyState.h"
 #include "../ui/Button.h"
 #include "../ui/Label.h"
+#include "../network/OnlinePlayerData.h"
 
 
 class LobbyPlayerLabels;
