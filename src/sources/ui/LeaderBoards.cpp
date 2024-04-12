@@ -15,7 +15,7 @@ LeaderBoards::LeaderBoards(GameStateManager *manager, sf::RenderWindow *window,
     m_background.setFillColor(sf::Color(2, 48, 71, 130));
     m_background.setPosition(30, 30);
 
-    for (size_t i = 0; i <= players_data.size(); i++) {
+    for (size_t i = 0; i < players_data.size(); i++) {
         m_player_labels.emplace_back();
     }
 }
