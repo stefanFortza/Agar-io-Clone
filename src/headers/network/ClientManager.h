@@ -45,7 +45,7 @@ public:
 
     void handleJoinedLobby(sf::Packet &packet);
 
-    void start();
+    void start(std::string name);
 
     void handleGameStarted();
 

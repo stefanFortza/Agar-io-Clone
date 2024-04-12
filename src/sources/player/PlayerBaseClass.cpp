@@ -4,6 +4,10 @@
 
 #include "../../headers/player/PlayerBaseClass.h"
 
+#include <random>
+
+#include "../../headers/network/NetworkManager.h"
+
 
 PlayerBaseClass::PlayerBaseClass(GameStateManager *manager,
                                  sf::RenderWindow *window, const std::string &net_id,
@@ -13,11 +17,15 @@ PlayerBaseClass::PlayerBaseClass(GameStateManager *manager,
                                                             m_hit_sprite(50.f),
                                                             m_net_id(net_id)
                                                             , m_is_dead(false) {
-    // auto center = sf::Vector2f(static_cast<float>(m_window->getSize().x),
-    // static_cast<float>(m_window->getSize().y)) / 2.f;
-    // m_player_shape.setOrigin(center);
+    std::random_device rd; // obtain a random number from hardware
+    std::mt19937 gen(rd()); // seed the generator
+    std::uniform_int_distribution<> distr(0, 255); // define the range
+    setIsAccelerating(false);
+
     m_player_shape.setOrigin(sf::Vector2f(50.f, 50.f));
-    m_player_shape.setFillColor(sf::Color::Blue);
+    m_player_shape.setFillColor(sf::Color(distr(gen), distr(gen), distr(gen)));
+    m_player_shape.setOutlineColor(sf::Color::Black);
+    this->setSize(50);
 
     m_hit_sprite.setOrigin(sf::Vector2f(50.f, 50.f));
     m_hit_sprite.setFillColor(sf::Color(255, 255, 255, 0));
@@ -32,16 +40,23 @@ OnlinePlayerData PlayerBaseClass::getData() {
     data.x = getWorldPosition().x;
     data.y = getWorldPosition().y;
     data.size = m_size;
+    data.color = m_fill_color;
     data.is_accelerating = m_is_accelerating;
+    data.name = m_name;
     return data;
 }
 
 void PlayerBaseClass::setData(const OnlinePlayerData &data) {
     if (m_is_dead) return;
 
+    if (NetworkManager::getLocalId() == data.id)
+        return;
+
     setPosition(data.x, data.y);
     setSize(data.size);
     setIsAccelerating(data.is_accelerating);
+    m_fill_color = data.color;
+    m_player_shape.setFillColor(data.color);
     // std::cout << data.is_accelerating << '\n';
 }
 
@@ -66,6 +81,7 @@ void PlayerBaseClass::setSize(float size) {
     m_hit_sprite.setRadius(size);
     auto x = m_player_shape.getRadius();
     m_player_shape.setOrigin(sf::Vector2f(x, x));
+    m_player_shape.setOutlineThickness(x * 0.02);
     m_hit_sprite.setOrigin(sf::Vector2f(x, x));
     m_hitbox.setRadius(size * 0.1f);
     m_hitbox.setOrigin(sf::Vector2f(size * 0.1f, size * 0.1f));
@@ -126,6 +142,8 @@ void PlayerBaseClass::updateCurrent(const sf::Time &delta) {
     if (m_is_dead) return;
 
     if (this->getIsAccelerating()) {
+        if (m_size > 50)
+            setSize(m_size * 0.999);
         // std::cout << this->getIsAccelerating() << '\n';
         if (m_shader_is_glowing_up) m_elapsed += delta;
         else m_elapsed -= delta;

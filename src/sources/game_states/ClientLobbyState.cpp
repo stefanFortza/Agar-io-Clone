@@ -7,8 +7,9 @@
 #include "../../headers/network/ClientManager.h"
 
 
-ClientLobbyState::ClientLobbyState(GameStateManager *manager, sf::RenderWindow *window): LobbyState(manager, window),
-    m_lobby_label("Client label") {
+ClientLobbyState::ClientLobbyState(GameStateManager *manager, sf::RenderWindow *window,
+                                   std::string name): LobbyState(manager, window),
+                                                      m_lobby_label("Client label"), m_grid(manager, window) {
     ClientManager::getInstance().onJoinedLobby.connect(
         [this](const std::map<std::string, OnlinePlayerData> &player_data) {
             onJoinLobby(player_data);
@@ -25,18 +26,19 @@ ClientLobbyState::ClientLobbyState(GameStateManager *manager, sf::RenderWindow *
     m_player_labels = std::make_unique<LobbyPlayerLabels>(manager, window);
 
     // Start Client
-    ClientManager::getInstance().start();
+    ClientManager::getInstance().start(name);
 }
 
-void ClientLobbyState::handleEvent(const sf::Event &event) {
+void ClientLobbyState::handleEvent(const sf::Event &) {
 }
 
 void ClientLobbyState::render() {
+    m_window->draw(m_grid);
     m_window->draw(m_lobby_label);
     m_window->draw(*m_player_labels);
 }
 
-void ClientLobbyState::update(const sf::Time &deltaTime) {
+void ClientLobbyState::update(const sf::Time &) {
 }
 
 void ClientLobbyState::onJoinLobby(const std::map<std::string, OnlinePlayerData> &player_data) {

@@ -4,12 +4,12 @@
 
 #include "../headers/Grid.hpp"
 
-sf::Vector2i Grid::m_world_size = sf::Vector2i(1000, 1000);
+sf::Vector2i Grid::m_world_size = sf::Vector2i(10000, 10000);
 int Grid::m_grid_spacing = 100.f;
 
 Grid::Grid(GameStateManager *manager, sf::RenderWindow *window, const std::string &name): SceneNode(
         manager, window, name),
-    m_grid_color(220, 220, 220, 255) {
+    m_grid_color(170, 170, 170, 255) {
     // vertical
     for (int i = 0; i < m_world_size.x / m_grid_spacing; i++) {
         this->m_vertical_grid[i].setSize(sf::Vector2f(5.f, m_world_size.y));

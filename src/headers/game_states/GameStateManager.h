@@ -6,6 +6,7 @@
 
 
 #include <memory>
+#include <queue>
 #include <SFML/Graphics.hpp>
 #include "State.hpp"
 #include "../network/NetworkManager.h"
@@ -17,6 +18,7 @@ class NetworkManager;
 class GameStateManager {
 private:
 	std::unique_ptr<State> currentState;
+	std::queue<std::unique_ptr<State> > m_state_queue;
 	std::unique_ptr<NetworkManager> m_network_manager;
 
 public:
@@ -35,6 +37,10 @@ public:
 	void setNetworkManager(std::unique_ptr<NetworkManager> network_manager);
 
 	void sendData();
+
+	void dequeueState();
+
+	void enqueueState(std::unique_ptr<State> state);
 
 	NetworkManager *getNetworkManager();
 

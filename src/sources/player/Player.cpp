@@ -57,9 +57,11 @@ void Player::updateCurrent(const sf::Time &delta) {
     this->setVelocity(m_dir * m_speed);
 
     auto pos = this->getPosition();
+
     pos.x = std::clamp(pos.x, -Grid::m_world_size.x / 2.f, Grid::m_world_size.x / 2.f);
     pos.y = std::clamp(pos.y, -Grid::m_world_size.y / 2.f, Grid::m_world_size.y / 2.f);
-    this->setPosition(pos);
+    if (pos != this->getPosition())
+        this->setPosition(pos);
 }
 
 void Player::drawCurrent(sf::RenderTarget &target, sf::RenderStates states) const {

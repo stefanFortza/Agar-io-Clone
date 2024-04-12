@@ -14,6 +14,7 @@ std::ostream &operator<<(std::ostream &os, const sf::Vector2<T> &vector) {
     return os;
 }
 
+
 template<class T>
 sf::Packet &operator<<(sf::Packet &packet, const sf::Vector2<T> &vector) {
     packet << vector.x << vector.y;
@@ -25,6 +26,7 @@ sf::Packet &operator>>(sf::Packet &packet, sf::Vector2<T> &vector) {
     packet >> vector.x >> vector.y;
     return packet;
 }
+
 
 namespace NetworkUtils {
     std::string getIdFromAdressAndPort(sf::IpAddress sender, unsigned short port);

@@ -5,6 +5,7 @@
 #ifndef SERVERLOBBYSTATE_H
 #define SERVERLOBBYSTATE_H
 #include "LobbyState.h"
+#include "../Grid.hpp"
 #include "../ui/Button.h"
 #include "../ui/Label.h"
 #include "../network/OnlinePlayerData.h"
@@ -18,6 +19,7 @@ private:
     std::vector<std::unique_ptr<Label> > player_labels;
     std::unique_ptr<LobbyPlayerLabels> m_player_labels;
     std::unique_ptr<Button> m_start_game_button;
+    Grid m_grid;
 
 
     void onPlayerJoinedLobby(const OnlinePlayerData &player);
@@ -28,7 +30,7 @@ private:
 
 public:
     ServerLobbyState(GameStateManager *manager,
-                     sf::RenderWindow *window);
+                     sf::RenderWindow *window, std::string name);
 
 
     void handleEvent(const sf::Event &event) override;

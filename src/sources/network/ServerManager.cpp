@@ -30,7 +30,7 @@ const std::string &ServerManager::getServerId() const {
 
 int count = 0;
 
-void ServerManager::start() {
+void ServerManager::start(std::string &name) {
 	// Set is running
 	m_running = true;
 	m_socket.bind(50000);
@@ -41,7 +41,7 @@ void ServerManager::start() {
 
 	m_connected_players.emplace(std::piecewise_construct,
 	                            std::forward_as_tuple(m_server_id),
-	                            std::forward_as_tuple(m_server_id));
+	                            std::forward_as_tuple(m_server_id, name));
 
 	onPlayerJoinedLobby.emit(m_connected_players[m_server_id]);
 
@@ -73,9 +73,12 @@ void ServerManager::receiveData() {
 				}
 				break;
 			}
-			case PlayerJoinedLobby:
-				handlePlayerJoinedLobby(id);
-				break;
+			case PlayerJoinedLobby: {
+				std::string name;
+				m_packet >> name;
+				handlePlayerJoinedLobby(id, name);
+			}
+			break;
 
 			// Broadcast to all players a player disconnected
 			case PlayerDisconected: {
@@ -99,6 +102,12 @@ void ServerManager::receiveData() {
 
 			case GameStarted:
 				break;
+			case FoodSpawned:
+				break;
+			case FoodEaten:
+				break;
+			case PlayerEaten:
+				break;
 		}
 	}
 }
@@ -106,20 +115,20 @@ void ServerManager::receiveData() {
 void ServerManager::sendData() {
 }
 
-void ServerManager::handlePlayerJoinedLobby(std::string id) {
+void ServerManager::handlePlayerJoinedLobby(std::string id, std::string name) {
 	std::cout << "Player connected to server\n";
 	std::cout << id << ' ' << count++ << "\n";
 
 	// HeartBeat
 	sf::Packet packet;
-	packet << HeartBeat << id;
+	packet << HeartBeat << id << name;
 	sendPacket(packet, id);
 
 	// add player to map
 	// OnlinePlayerData player_data_that_joined(id);
 	m_connected_players.emplace(std::piecewise_construct,
 	                            std::forward_as_tuple(id),
-	                            std::forward_as_tuple(id));
+	                            std::forward_as_tuple(id, name));
 
 	onPlayerJoinedLobby.emit(m_connected_players[id]);
 
@@ -146,9 +155,6 @@ void ServerManager::handlePlayerData(const OnlinePlayerData &data) {
 	broadCast(m_packet, data.id);
 }
 
-void ServerManager::setCurrentServerPlayerData(float x, float y) {
-	// m_connected_players[getId(sf::IpAddress::getLocalAddress(), 50000)]->setXY(x, y);
-}
 
 // Start the game from lobby state
 void ServerManager::startGame() {

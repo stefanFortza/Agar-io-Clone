@@ -11,11 +11,12 @@ PlayersManager::PlayersManager(GameStateManager *manager, sf::RenderWindow *wind
                                const std::string &name): SceneNode(manager, window, name) {
     for (auto &player_pair: players_data) {
         if (player_pair.first == local_player_id) {
-            m_player = std::make_unique<Player>(manager, window, player_pair.first);
+            m_player = std::make_unique<Player>(manager, window, player_pair.first, player_pair.second.name);
         } else {
             m_remote_players.emplace(std::piecewise_construct,
                                      std::forward_as_tuple(player_pair.first),
-                                     std::forward_as_tuple(manager, window, player_pair.first));
+                                     std::forward_as_tuple(manager, window, player_pair.first,
+                                                           player_pair.second.name));
         }
     }
 }
@@ -81,8 +82,8 @@ void PlayersManager::drawCurrent(sf::RenderTarget &target, sf::RenderStates stat
     }
 }
 
-void PlayersManager::setCamera(PlayerCamera &player_camera) {
-    player_camera.setTarget(m_player.get());
+void PlayersManager::setCamera(PlayerCamera *player_camera) {
+    player_camera->setTarget(m_player.get());
 }
 
 void PlayersManager::handlePlayerDataReceived(const OnlinePlayerData &player_data) {
@@ -95,6 +96,15 @@ std::vector<Collidable *> PlayersManager::getCollidables() {
     vec.push_back(m_player.get());
     for (auto &pair: m_remote_players) {
         vec.push_back(&pair.second);
+    }
+    return vec;
+}
+
+std::vector<OnlinePlayerData> PlayersManager::getPlayersData() {
+    std::vector<OnlinePlayerData> vec;
+    vec.push_back(m_player->getData());
+    for (auto &pair: m_remote_players) {
+        vec.push_back(pair.second.getData());
     }
     return vec;
 }

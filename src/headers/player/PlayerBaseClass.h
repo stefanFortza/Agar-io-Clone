@@ -50,9 +50,11 @@ protected:
     sf::CircleShape m_player_shape;
     sf::CircleShape m_hit_sprite;
     sf::CircleShape m_hitbox;
+    sf::Color m_fill_color;
+    sf::Color m_outline_color;
     sf::Vector2f m_dir;
-    bool m_is_accelerating;
-    bool m_shader_is_glowing_up;
+    bool m_is_accelerating{};
+    bool m_shader_is_glowing_up{};
     bool m_is_dead;
     float m_speed = 20;
     float m_size = 50;

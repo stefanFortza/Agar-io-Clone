@@ -7,16 +7,19 @@
 #include <iostream>
 #include <random>
 
+#include "../../headers/Grid.hpp"
+
 int Food::getId() const {
     return m_id;
 }
 
 Food::Food(GameStateManager *manager, sf::RenderWindow *window, int id,
            const std::string &name): Entity(manager, window, name), m_shape(15.f), m_id(id) {
-    m_shape.setFillColor(sf::Color::Green);
     std::random_device rd; // obtain a random number from hardware
     std::mt19937 gen(rd()); // seed the generator
-    std::uniform_int_distribution<> distr(-500, 500); // define the range
+    std::uniform_int_distribution<> distr(-Grid::m_world_size.x / 2.f, Grid::m_world_size.y / 2.f); // define the range
+
+    m_shape.setFillColor(sf::Color(distr(gen) % 256, distr(gen) % 256, distr(gen) % 256));
 
     // for (int n = 0; n < 40; ++n)
     //     std::cout << distr(gen) << ' '; // generate numbers

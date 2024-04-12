@@ -173,6 +173,12 @@ add_executable(${PROJECT_NAME}
         src/sources/entitities/Collidable.cpp
         src/headers/entities/Collidable.h
         src/headers/utils/Constants.h
+        src/sources/ui/LeaderBoards.cpp
+        src/headers/ui/LeaderBoards.h
+        src/sources/ui/LeaderBoardsLabel.cpp
+        src/headers/ui/LeaderBoardsLabel.h
+        src/sources/ui/InputField.cpp
+        src/headers/ui/InputField.h
 )
 
 ###############################################################################

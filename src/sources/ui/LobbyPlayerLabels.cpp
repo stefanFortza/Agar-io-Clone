@@ -23,10 +23,10 @@ void LobbyPlayerLabels::drawCurrent(sf::RenderTarget &target, sf::RenderStates s
 
 void LobbyPlayerLabels::setCurrentPlayers(const std::map<std::string, OnlinePlayerData> &player_data) {
     for (auto &data: player_data) {
-        m_player_lobby_labels[data.first] = std::make_unique<Label>(data.first);
+        m_player_lobby_labels[data.first] = std::make_unique<Label>(data.second.name + " " + data.first);
     }
 }
 
 void LobbyPlayerLabels::addPlayer(const OnlinePlayerData &player) {
-    m_player_lobby_labels[player.id] = std::make_unique<Label>(player.id);
+    m_player_lobby_labels[player.id] = std::make_unique<Label>(player.name + " " + player.id);
 }

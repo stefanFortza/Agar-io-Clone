@@ -5,6 +5,7 @@
 #ifndef CLIENTLOBBYSTATE_H
 #define CLIENTLOBBYSTATE_H
 #include "LobbyState.h"
+#include "../Grid.hpp"
 #include "../ui/LobbyPlayerLabels.h"
 #include "../ui/Label.h"
 
@@ -13,9 +14,10 @@ class ClientLobbyState : public LobbyState {
 private:
     Label m_lobby_label;
     std::unique_ptr<LobbyPlayerLabels> m_player_labels;
+    Grid m_grid;
 
 public:
-    ClientLobbyState(GameStateManager *manager, sf::RenderWindow *window);
+    ClientLobbyState(GameStateManager *manager, sf::RenderWindow *window, std::string name);
 
     void handleEvent(const sf::Event &event) override;
 
