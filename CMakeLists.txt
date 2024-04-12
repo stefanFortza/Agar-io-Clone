@@ -118,7 +118,7 @@ add_executable(${PROJECT_NAME}
         src/sources/player/Player.cpp
         src/sources/Grid.cpp
         src/headers/Grid.hpp
-        src/sources/entitities/Entity.cpp
+        src/sources/entities/Entity.cpp
         src/headers/entities/Entity.hpp
         src/sources/PlayerCamera.cpp
         src/sources/game_states/GameStateManager.cpp
@@ -143,8 +143,6 @@ add_executable(${PROJECT_NAME}
         src/headers/player/PlayerBaseClass.h
         src/sources/player/RemotePlayer.cpp
         src/headers/player/RemotePlayer.h
-        src/sources/Command.cpp
-        src/headers/Command.h
         src/sources/game_states/LobbyState.cpp
         src/headers/game_states/LobbyState.h
         src/sources/game_states/ServerLobbyState.cpp
@@ -166,11 +164,11 @@ add_executable(${PROJECT_NAME}
         src/headers/game_states/ClientGameState.h
         src/sources/player/PlayersManager.cpp
         src/headers/player/PlayersManager.h
-        src/sources/entitities/FoodManager.cpp
+        src/sources/entities/FoodManager.cpp
         src/headers/entities/FoodManager.h
-        src/sources/entitities/Food.cpp
+        src/sources/entities/Food.cpp
         src/headers/entities/Food.h
-        src/sources/entitities/Collidable.cpp
+        src/sources/entities/Collidable.cpp
         src/headers/entities/Collidable.h
         src/headers/utils/Constants.h
         src/sources/ui/LeaderBoards.cpp
