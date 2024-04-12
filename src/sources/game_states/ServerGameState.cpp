@@ -13,12 +13,11 @@ ServerGameState::ServerGameState(GameStateManager *manager, sf::RenderWindow *wi
                                                          window, players_data,
                                                          ServerManager::getInstance().getServerId()
     );
-    m_leaderboards.setPlayersManager(m_players_manager.get());
 
     auto v = m_players_manager->getCollidables();
     m_collidables.insert(m_collidables.end(), v.begin(), v.end());
 
-    m_players_manager->setCamera(&m_player_camera);
+    m_players_manager->setCamera(m_player_camera);
     m_food_manager.setIsSpawningFood(true);
 
     m_food_manager.onFoodSpawned.connect([this](Food *food) {
@@ -41,12 +40,20 @@ void ServerGameState::handleEvent(const sf::Event &event) {
 }
 
 void ServerGameState::render() {
-    GameState::render();
+    m_window->setView(m_player_camera.getView());
+    m_window->draw(m_grid);
+    m_window->draw(m_food_manager);
+    m_window->draw(*m_players_manager);
+
+    // draw ui
+    m_window->setView(m_window->getDefaultView());
 }
 
 
 void ServerGameState::update(const sf::Time &deltaTime) {
-    GameState::update(deltaTime);
+    m_players_manager->update(deltaTime);
+    m_player_camera.update(deltaTime);
+    m_food_manager.update(deltaTime);
 
     // check colisions
     checkCollisions();

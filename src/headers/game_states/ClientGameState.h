@@ -27,6 +27,7 @@ private:
 
     void onPlayerEaten(const OnlinePlayerData &player1, const OnlinePlayerData &player2);
 
+    void handlePlayerDisconected(const std::string &id);
 
     void onPlayerDisconnected(const std::string &id);
 };

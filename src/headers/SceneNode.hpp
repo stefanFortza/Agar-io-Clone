@@ -14,8 +14,6 @@ class SceneNode : public sf::Transformable, public sf::Drawable {
 public:
     typedef std::unique_ptr<SceneNode> Ptr;
 
-    SceneNode() = default;
-
     explicit SceneNode(GameStateManager *manager,
                        sf::RenderWindow *window, const std::string &name = "Node");
 
@@ -52,12 +50,14 @@ private:
 
     virtual void drawCurrent(sf::RenderTarget &target, sf::RenderStates states) const = 0;
 
+private:
+    std::vector<Ptr> m_children;
+
 protected:
     GameStateManager *m_game_state_manager;
     sf::RenderWindow *m_window;
     SceneNode *m_parent;
     std::string m_name;
-    std::vector<Ptr> m_children;
 };
 
 #endif

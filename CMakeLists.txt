@@ -106,33 +106,73 @@ endif ()
 add_executable(${PROJECT_NAME}
         main.cpp
         env_fixes.h
-        generated/src/Game.cpp
-        generated/src/World.cpp
-        generated/include/World.hpp
-        generated/include/Game.hpp
-        generated/include/SFML_Window.hpp
-        generated/include/SceneNode.hpp
-        generated/include/Player.hpp
-        generated/include/PlayerCamera.hpp
-        generated/include/SFMLMath.hpp
-        generated/src/SFML_Window.cpp
-        generated/src/SceneNode.cpp
-        generated/src/Player.cpp
-        generated/src/Grid.cpp
-        generated/include/Grid.hpp
-        generated/src/Entity.cpp
-        generated/include/Entity.hpp
-        generated/src/PlayerCamera.cpp
-        generated/src/game_states/GameStateManager.cpp
-        generated/include/game_states/GameStateManager.h
-        generated/src/game_states/State.cpp
-        generated/include/game_states/State.hpp
-        generated/src/game_states/MenuState.cpp
-        generated/include/game_states/MenuState.hpp
-        generated/src/ui/Button.cpp
-        generated/include/ui/Button.h
-        generated/src/game_states/GameState.cpp
-        generated/include/game_states/GameState.h
+        src/sources/Game.cpp
+        src/sources/World.cpp
+        src/headers/World.hpp
+        src/headers/Game.hpp
+        src/headers/SceneNode.hpp
+        src/headers/player/Player.hpp
+        src/headers/PlayerCamera.hpp
+        src/headers/SFMLMath.hpp
+        src/sources/SceneNode.cpp
+        src/sources/player/Player.cpp
+        src/sources/Grid.cpp
+        src/headers/Grid.hpp
+        src/sources/entitities/Entity.cpp
+        src/headers/entities/Entity.hpp
+        src/sources/PlayerCamera.cpp
+        src/sources/game_states/GameStateManager.cpp
+        src/headers/game_states/GameStateManager.h
+        src/sources/game_states/State.cpp
+        src/headers/game_states/State.hpp
+        src/sources/game_states/MenuState.cpp
+        src/headers/game_states/MenuState.hpp
+        src/sources/ui/Button.cpp
+        src/headers/ui/Button.h
+        src/sources/game_states/GameState.cpp
+        src/headers/game_states/GameState.h
+        src/sources/utils/Utils.cpp
+        src/headers/utils/Utils.h
+        src/sources/network/ServerManager.cpp
+        src/headers/network/ServerManager.h
+        src/sources/network/ClientManager.cpp
+        src/headers/network/ClientManager.h
+        src/sources/network/NetworkManager.cpp
+        src/headers/network/NetworkManager.h
+        src/sources/player/PlayerBaseClass.cpp
+        src/headers/player/PlayerBaseClass.h
+        src/sources/player/RemotePlayer.cpp
+        src/headers/player/RemotePlayer.h
+        src/sources/Command.cpp
+        src/headers/Command.h
+        src/sources/game_states/LobbyState.cpp
+        src/headers/game_states/LobbyState.h
+        src/sources/game_states/ServerLobbyState.cpp
+        src/headers/game_states/ServerLobbyState.h
+        src/sources/game_states/ClientLobbyState.cpp
+        src/headers/game_states/ClientLobbyState.h
+        src/sources/ui/Label.cpp
+        src/headers/ui/Label.h
+        src/sources/ui/AssetManager.cpp
+        src/headers/ui/AssetManager.h
+        src/headers/utils/Signal.h
+        src/sources/utils/Signal.cpp
+        src/headers/network/OnlinePlayerData.h
+        src/sources/ui/LobbyPlayerLabels.cpp
+        src/headers/ui/LobbyPlayerLabels.h
+        src/sources/game_states/ServerGameState.cpp
+        src/headers/game_states/ServerGameState.h
+        src/sources/game_states/ClientGameState.cpp
+        src/headers/game_states/ClientGameState.h
+        src/sources/player/PlayersManager.cpp
+        src/headers/player/PlayersManager.h
+        src/sources/entitities/FoodManager.cpp
+        src/headers/entities/FoodManager.h
+        src/sources/entitities/Food.cpp
+        src/headers/entities/Food.h
+        src/sources/entitities/Collidable.cpp
+        src/headers/entities/Collidable.h
+        src/headers/utils/Constants.h
 )
 
 ###############################################################################
@@ -170,7 +210,7 @@ target_include_directories(${PROJECT_NAME} SYSTEM PRIVATE generated/include)
 # target_include_directories(${PROJECT_NAME} SYSTEM PRIVATE ext/<SomeHppLib>/include)
 target_include_directories(${PROJECT_NAME} SYSTEM PRIVATE ${SFML_SOURCE_DIR}/include)
 target_include_directories(${PROJECT_NAME} SYSTEM PRIVATE include)
-target_link_libraries(${PROJECT_NAME} PRIVATE sfml-graphics sfml-window sfml-system Threads::Threads)
+target_link_libraries(${PROJECT_NAME} PRIVATE sfml-graphics sfml-window sfml-system sfml-network Threads::Threads)
 
 
 if (APPLE)

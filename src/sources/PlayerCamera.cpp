@@ -44,8 +44,7 @@ void PlayerCamera::handleEventCurrent(const sf::Event &event) {
 
 void PlayerCamera::onPlayerSizeChanged(const float &size) {
     std::cout << "size changed\n";
-    auto factor = size / 100.f;
-    m_view.setSize(1280 * factor, 720 * factor);
+    m_view.zoom(1.02);
 }
 
 void PlayerCamera::updateCurrent(const sf::Time &/*delta*/) {

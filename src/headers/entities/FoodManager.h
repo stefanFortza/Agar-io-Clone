@@ -8,6 +8,7 @@
 #include "../SceneNode.hpp"
 #include "../utils/Signal.h"
 
+static int id_count = 0;
 
 class FoodManager : public SceneNode {
 private:

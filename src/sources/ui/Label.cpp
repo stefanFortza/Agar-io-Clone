@@ -10,5 +10,5 @@ Label::Label(const sf::String &string, unsigned int characterSize) {
    setFont(AssetManager::roboto_font);
    setString(string);
    setCharacterSize(characterSize);
-   setFillColor(sf::Color::Black);
+   setColor(sf::Color::Black);
 }

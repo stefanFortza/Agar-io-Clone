@@ -9,20 +9,16 @@
 #include "../../headers/game_states/ServerGameState.h"
 
 
-ServerLobbyState::ServerLobbyState(GameStateManager *manager, sf::RenderWindow *window,
-                                   std::string name): LobbyState(manager, window),
-                                                      m_lobby_label(nullptr), m_grid(manager, window) {
+ServerLobbyState::ServerLobbyState(GameStateManager *manager, sf::RenderWindow *window): LobbyState(manager, window),
+    m_lobby_label(nullptr) {
     std::cout << "Da\n";
-
     ServerManager::getInstance().onPlayerJoinedLobby.connect([this](const OnlinePlayerData &player_data) {
         onPlayerJoinedLobby(player_data);
     });
-
     ServerManager::getInstance().onGameStarted.connect(
         [this](const std::map<std::string, OnlinePlayerData> &player_data) {
             onGameStarted(player_data);
         });
-
     m_lobby_label = std::make_unique<Label>("Server Lobby");
     m_lobby_label->setPosition(sf::Vector2f(100, 100));
     m_player_labels = std::make_unique<LobbyPlayerLabels>(manager, window);
@@ -38,7 +34,7 @@ ServerLobbyState::ServerLobbyState(GameStateManager *manager, sf::RenderWindow *
     m_start_game_button->setPosition(button_pos);
 
     // Start Server after connecting signals
-    ServerManager::getInstance().start(name);
+    ServerManager::getInstance().start();
 }
 
 void ServerLobbyState::handleEvent(const sf::Event &event) {
@@ -46,13 +42,12 @@ void ServerLobbyState::handleEvent(const sf::Event &event) {
 }
 
 void ServerLobbyState::render() {
-    m_window->draw(m_grid);
     m_window->draw(*m_lobby_label);
     m_window->draw(*m_player_labels);
     m_window->draw(*m_start_game_button);
 }
 
-void ServerLobbyState::update(const sf::Time &) {
+void ServerLobbyState::update(const sf::Time &deltaTime) {
 }
 
 void ServerLobbyState::onPlayerJoinedLobby(const OnlinePlayerData &player) {

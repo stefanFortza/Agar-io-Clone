@@ -5,9 +5,7 @@
 #pragma once
 
 #include "GameStateManager.h"
-#include "../Grid.hpp"
 #include "../ui/Button.h"
-#include "../ui/InputField.h"
 
 
 class MenuState : public State {
@@ -20,18 +18,17 @@ public:
 
 	void update(const sf::Time &deltaTime) override;
 
+	void host();
+
 	~MenuState() override;
 
 private:
-	InputField m_name_input_field;
-	std::unique_ptr<Button> playBtn;
-	std::unique_ptr<Button> hostBtn;
-	Grid grid;
-	bool m_is_transitioning;
+	Button playBtn;
+	Button hostBtn;
 
 	virtual void play();
 
-	void host();
+	void changeState(bool isServer);
 };
 
 

@@ -12,7 +12,7 @@
 ClientManager::ClientManager(): m_is_running(false) {
 }
 
-void ClientManager::start(std::string name) {
+void ClientManager::start() {
 	// Set server is running
 	m_is_running = true;
 
@@ -31,7 +31,7 @@ void ClientManager::start(std::string name) {
 	std::string type = "connected";
 
 	// Tell server i joined
-	packet << PlayerJoinedLobby << name;
+	packet << PlayerJoinedLobby;
 	m_socket.send(packet, "127.0.0.1", 50000);
 }
 

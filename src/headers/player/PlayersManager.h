@@ -13,7 +13,6 @@
 
 class Player;
 class RemotePlayer;
-class PlayerCamera;
 
 class PlayersManager : public SceneNode {
 private:
@@ -25,13 +24,11 @@ public:
                    const std::map<std::string, OnlinePlayerData> &players_data, const std::string &local_player_id,
                    const std::string &name = "Player manager");
 
-    void setCamera(PlayerCamera *player_camera);
+    void setCamera(PlayerCamera &player_camera);
 
     void handlePlayerDataReceived(const OnlinePlayerData &player_data);
 
     std::vector<Collidable *> getCollidables();
-
-    std::vector<OnlinePlayerData> getPlayersData();
 
     OnlinePlayerData getLocalPlayerData();
 

@@ -27,6 +27,7 @@ enum PacketType:unsigned int {
 	PlayerEaten
 };
 
+class ServerManager;
 
 class ServerManager {
 private:
@@ -48,9 +49,9 @@ public:
 
 	const std::string &getServerId() const;
 
-	void start(std::string &name);
+	void start();
 
-	void handlePlayerJoinedLobby(std::string id, std::string name);
+	void handlePlayerJoinedLobby(std::string id);
 
 	void handlePlayerData(const OnlinePlayerData &data);
 
@@ -63,6 +64,8 @@ public:
 	void broadCast(sf::Packet &packet, const std::string &id_to_ignore = "");
 
 	void broadCastToOnlinePlayersWithoutServer(sf::Packet &packet);
+
+	void setCurrentServerPlayerData(float x, float y);
 
 	void sendPacket(sf::Packet &packet, const std::string &id);
 

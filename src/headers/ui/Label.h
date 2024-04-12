@@ -4,7 +4,6 @@
 
 #ifndef LABEL_H
 #define LABEL_H
-#include "../SceneNode.hpp"
 #include "SFML/Graphics/Text.hpp"
 
 
