@@ -154,7 +154,7 @@ add_executable(${PROJECT_NAME}
         src/sources/ui/AssetManager.cpp
         src/headers/ui/AssetManager.h
         src/headers/utils/Signal.h
-        src/sources/utils/Signal.cpp
+        #        src/sources/utils/Signal.cpp
         src/headers/network/OnlinePlayerData.h
         src/sources/ui/LobbyPlayerLabels.cpp
         src/headers/ui/LobbyPlayerLabels.h
