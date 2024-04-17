@@ -24,6 +24,6 @@ sf::Vector2f Entity::getVelocity() const {
  return m_velocity;
 }
 
-void Entity::updateCurrentPhysics(sf::Time delta) {
+void Entity::updateCurrent(const sf::Time &delta) {
  this->move(m_velocity * delta.asSeconds());
 }

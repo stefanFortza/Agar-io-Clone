@@ -177,6 +177,8 @@ add_executable(${PROJECT_NAME}
         src/headers/ui/LeaderBoardsLabel.h
         src/sources/ui/InputField.cpp
         src/headers/ui/InputField.h
+        src/sources/ui/LobbyPlayerLabel.cpp
+        src/headers/ui/LobbyPlayerLabel.h
 )
 
 ###############################################################################

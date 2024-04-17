@@ -20,14 +20,13 @@ public:
 
  sf::Vector2f getVelocity() const;
 
- void updateCurrentPhysics(sf::Time delta);
-
 private:
  sf::Vector2f m_velocity;
 
  // void handleEventCurrent(const sf::Event &event) override;
  //
- // void updateCurrent(const sf::Time &delta) override;
+protected:
+ void updateCurrent(const sf::Time &delta) override;
 };
 
 

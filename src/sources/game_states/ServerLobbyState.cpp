@@ -23,8 +23,10 @@ ServerLobbyState::ServerLobbyState(GameStateManager *manager, sf::RenderWindow *
             onGameStarted(player_data);
         });
 
-    m_lobby_label = std::make_unique<Label>("Server Lobby");
-    m_lobby_label->setPosition(sf::Vector2f(100, 100));
+    m_lobby_label = std::make_unique<Label>("Server Lobby", 50);
+
+    m_lobby_label->setPosition(
+        sf::Vector2f(m_window->getSize().x / 2 - m_lobby_label->getGlobalBounds().width / 2, 100));
     m_player_labels = std::make_unique<LobbyPlayerLabels>(manager, window);
     m_start_game_button = std::make_unique<Button>([this] {
         onStartButtonPressed();

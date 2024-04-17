@@ -4,6 +4,8 @@
 #include <iostream>
 #include "../../headers/SFMLMath.hpp"
 #include "../../headers/player/Player.hpp"
+
+#include <bits/random.h>
 #include <SFML/Graphics.hpp>
 
 #include "../../headers/Grid.hpp"
@@ -12,6 +14,15 @@ Player::Player(GameStateManager *manager,
                sf::RenderWindow *window, std::string net_id,
                const std::string &name): PlayerBaseClass(manager, window, net_id, name) {
     this->setVelocity(sf::Vector2f(0, 1) * m_speed);
+    m_speed = 200.;
+
+    std::random_device rd; // obtain a random number from hardware
+    std::mt19937 gen(rd()); // seed the generator
+    std::uniform_int_distribution<> distr(0, 255); // define the range
+
+    m_fill_color = sf::Color(distr(gen), distr(gen), distr(gen));
+    m_player_shape.setOrigin(sf::Vector2f(50.f, 50.f));
+    m_player_shape.setFillColor(m_fill_color);
 }
 
 

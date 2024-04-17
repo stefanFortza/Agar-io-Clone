@@ -7,12 +7,13 @@
 #include "../SceneNode.hpp"
 #include "../network/OnlinePlayerData.h"
 #include "Label.h"
+#include "LobbyPlayerLabel.h"
 
 
 struct OnlinePlayerData;
 
 class LobbyPlayerLabels : public SceneNode {
-    std::map<std::string, std::unique_ptr<Label> > m_player_lobby_labels;
+    std::map<std::string, std::unique_ptr<LobbyPlayerLabel> > m_player_lobby_labels;
 
 public:
     LobbyPlayerLabels(GameStateManager *manager, sf::RenderWindow *window, const std::string &name = "Player labels")

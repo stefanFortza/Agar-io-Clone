@@ -9,7 +9,7 @@
 
 ClientLobbyState::ClientLobbyState(GameStateManager *manager, sf::RenderWindow *window,
                                    std::string name): LobbyState(manager, window),
-                                                      m_lobby_label("Client label"), m_grid(manager, window) {
+                                                      m_lobby_label("Client label", 50), m_grid(manager, window) {
     ClientManager::getInstance().onJoinedLobby.connect(
         [this](const std::map<std::string, OnlinePlayerData> &player_data) {
             onJoinLobby(player_data);
@@ -22,7 +22,8 @@ ClientLobbyState::ClientLobbyState(GameStateManager *manager, sf::RenderWindow *
             onGameStarted(player_data);
         });
 
-    m_lobby_label.setPosition(100, 100);
+    m_lobby_label.setPosition(
+        sf::Vector2f(m_window->getSize().x / 2 - m_lobby_label.getGlobalBounds().width / 2, 100));
     m_player_labels = std::make_unique<LobbyPlayerLabels>(manager, window);
 
     // Start Client

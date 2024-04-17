@@ -33,10 +33,6 @@ void SceneNode::handleEvent(const sf::Event &event) {
 void SceneNode::update(const sf::Time &delta) {
     updateCurrent(delta);
 
-    if (dynamic_cast<Entity *>(this)) {
-        dynamic_cast<Entity *>(this)->updateCurrentPhysics(delta);
-    }
-
     for (const auto &node: m_children)
         node->update(delta);
 }

@@ -17,6 +17,7 @@ public:
 private:
     sf::View m_view;
     Player *m_target;
+    float m_current_size;
 
     void handleEventCurrent(const sf::Event &event) override;
 

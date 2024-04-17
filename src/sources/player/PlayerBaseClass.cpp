@@ -17,14 +17,7 @@ PlayerBaseClass::PlayerBaseClass(GameStateManager *manager,
                                                             m_hit_sprite(50.f),
                                                             m_net_id(net_id)
                                                             , m_is_dead(false) {
-    std::random_device rd; // obtain a random number from hardware
-    std::mt19937 gen(rd()); // seed the generator
-    std::uniform_int_distribution<> distr(0, 255); // define the range
     setIsAccelerating(false);
-
-    m_player_shape.setOrigin(sf::Vector2f(50.f, 50.f));
-    m_player_shape.setFillColor(sf::Color(distr(gen), distr(gen), distr(gen)));
-    m_player_shape.setOutlineColor(sf::Color::Black);
     this->setSize(50);
 
     m_hit_sprite.setOrigin(sf::Vector2f(50.f, 50.f));
@@ -32,6 +25,8 @@ PlayerBaseClass::PlayerBaseClass(GameStateManager *manager,
 
     m_hitbox.setOrigin(sf::Vector2f(5.f, 5.f));
     m_hitbox.setFillColor(sf::Color::Red);
+
+    m_player_shape.setOutlineColor(sf::Color::Black);
 }
 
 OnlinePlayerData PlayerBaseClass::getData() {
@@ -49,10 +44,9 @@ OnlinePlayerData PlayerBaseClass::getData() {
 void PlayerBaseClass::setData(const OnlinePlayerData &data) {
     if (m_is_dead) return;
 
-    if (NetworkManager::getLocalId() == data.id)
-        return;
+    if (NetworkManager::getLocalId() != data.id)
+        setPosition(data.x, data.y);
 
-    setPosition(data.x, data.y);
     setSize(data.size);
     setIsAccelerating(data.is_accelerating);
     m_fill_color = data.color;
@@ -107,7 +101,7 @@ void PlayerBaseClass::setIsAccelerating(bool isAccelerating) {
     } else {
         m_is_accelerating = false;
         m_hit_sprite.setFillColor(sf::Color(255, 255, 255, 0));
-        m_speed = 20;
+        m_speed = 200;
     }
 }
 
@@ -139,11 +133,13 @@ void PlayerBaseClass::eatPlayer(const OnlinePlayerData &player_data) {
 }
 
 void PlayerBaseClass::updateCurrent(const sf::Time &delta) {
+    Entity::updateCurrent(delta);
+
     if (m_is_dead) return;
 
     if (this->getIsAccelerating()) {
         if (m_size > 50)
-            setSize(m_size * 0.999);
+            setSize(m_size * 0.994);
         // std::cout << this->getIsAccelerating() << '\n';
         if (m_shader_is_glowing_up) m_elapsed += delta;
         else m_elapsed -= delta;

@@ -4,6 +4,8 @@
 #include <iostream>
 #include "../headers/PlayerCamera.hpp"
 
+#include <valarray>
+
 #include "../headers/utils/Utils.h"
 
 
@@ -18,6 +20,8 @@ void PlayerCamera::setTarget(Player *target) {
     target->onSizeChanged.connect([this](float size) {
         onPlayerSizeChanged(size);
     });
+
+    onPlayerSizeChanged(target->getSize());
 }
 
 
@@ -44,7 +48,12 @@ void PlayerCamera::handleEventCurrent(const sf::Event &event) {
 
 void PlayerCamera::onPlayerSizeChanged(const float &size) {
     std::cout << "size changed\n";
-    auto factor = size / 100.f;
+    // if (m_current_size < size) {
+    //     m_view.zoom(1.01);
+    // } else {
+    //     m_view.zoom(0.99);
+    // }
+    auto factor = std::sqrt(size) / sqrt(60);
     m_view.setSize(1280 * factor, 720 * factor);
 }
 

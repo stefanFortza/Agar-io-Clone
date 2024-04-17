@@ -22,13 +22,13 @@ void FoodManager::handleEventCurrent(const sf::Event &) {
 
 void FoodManager::updateCurrent(const sf::Time &delta) {
     if (m_is_spawning) {
-        if (m_children.size() > 1000) {
+        if (m_children.size() > 10000) {
             m_spawn_timer = sf::Time::Zero;
             return;
         }
 
         m_spawn_timer += delta;
-        while (m_spawn_timer.asSeconds() >= 0.1f) {
+        while (m_spawn_timer.asSeconds() >= 0.01f) {
             // spawn food
             std::unique_ptr<Food> food = std::make_unique<Food>(m_game_state_manager, m_window, ::id_count++);
             onFoodSpawned.emit(food.get());
