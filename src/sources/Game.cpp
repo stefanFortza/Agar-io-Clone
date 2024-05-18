@@ -53,7 +53,6 @@ void Game::start() {
 		m_game_state_manager->sendData();
 		m_window.display();
 
-		m_game_state_manager->dequeueState();
 		restartClock();
 	}
 }

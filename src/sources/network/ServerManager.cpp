@@ -5,6 +5,8 @@
 #include "../../headers/network/ServerManager.h"
 
 #include <iostream>
+
+#include "../../headers/exceptions/AlreadyHostingExeption.h"
 #include "../../headers/utils/Signal.h"
 #include "../../headers/network/NetworkManager.h"
 #include "../../headers/network/OnlinePlayerData.h"
@@ -28,12 +30,22 @@ const std::string &ServerManager::getServerId() const {
 	return m_server_id;
 }
 
+void ServerManager::tryBind() {
+	auto status = m_socket.bind(50000);
+	if (status != sf::Socket::Done) {
+		throw AlreadyHostingExeption("Another player is currently hosting");
+	}
+
+	m_socket.unbind();
+}
+
 int count = 0;
 
 void ServerManager::start(std::string &name) {
 	// Set is running
 	m_running = true;
 	m_socket.bind(50000);
+
 	m_socket.setBlocking(false);
 
 	m_server_id = NetworkUtils::getIdFromAdressAndPort(sf::IpAddress::getLocalAddress(), 50000);
@@ -91,8 +103,12 @@ void ServerManager::receiveData() {
 				}
 				break;
 			}
-			case HeartBeat:
+			case HeartBeat: {
+				sf::Packet packet;
+				packet << HeartBeat;
+				sendPacket(packet, id);
 				break;
+			}
 			case PlayerData: {
 				OnlinePlayerData data;
 				m_packet >> data;

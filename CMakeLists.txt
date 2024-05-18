@@ -179,6 +179,12 @@ add_executable(${PROJECT_NAME}
         src/headers/ui/InputField.h
         src/sources/ui/LobbyPlayerLabel.cpp
         src/headers/ui/LobbyPlayerLabel.h
+        src/sources/exceptions/AlreadyHostingExeption.cpp
+        src/headers/exceptions/AlreadyHostingExeption.h
+        src/sources/exceptions/NoHostFoundException.cpp
+        src/headers/exceptions/NoHostFoundException.h
+        src/headers/exceptions/WrongCharacterEnteredException.cpp
+        src/headers/exceptions/WrongCharacterEnteredException.h
 )
 
 ###############################################################################

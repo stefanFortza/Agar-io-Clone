@@ -24,6 +24,7 @@ void GameStateManager::update(const sf::Time &deltaTime) const {
 }
 
 void GameStateManager::setState(std::unique_ptr<State> state) {
+	// currentState.
 	currentState = std::move(state);
 }
 
@@ -44,18 +45,6 @@ void GameStateManager::sendData() {
 		m_network_manager->sendData();
 }
 
-void GameStateManager::dequeueState() {
-	if (!m_state_queue.empty()) {
-		this->setState(std::move(m_state_queue.back()));
-		m_state_queue.pop();
-	}
-}
-
-
-void GameStateManager::enqueueState(std::unique_ptr<State> state) {
-	// m_state_queue.pop();
-	m_state_queue.push(std::move(state));
-}
 
 NetworkManager *GameStateManager::getNetworkManager() {
 	return m_network_manager.get();

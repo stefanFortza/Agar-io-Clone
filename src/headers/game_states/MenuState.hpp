@@ -29,7 +29,7 @@ private:
 	Grid grid;
 	bool m_is_transitioning;
 
-	virtual void play();
+	void play();
 
 	void host();
 };

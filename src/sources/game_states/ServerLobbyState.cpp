@@ -14,6 +14,7 @@ ServerLobbyState::ServerLobbyState(GameStateManager *manager, sf::RenderWindow *
                                                       m_lobby_label(nullptr), m_grid(manager, window) {
     std::cout << "Da\n";
 
+
     ServerManager::getInstance().onPlayerJoinedLobby.connect([this](const OnlinePlayerData &player_data) {
         onPlayerJoinedLobby(player_data);
     });

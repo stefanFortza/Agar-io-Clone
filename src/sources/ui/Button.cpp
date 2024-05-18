@@ -17,7 +17,7 @@ Button::Button(std::function<void()> onClick, const sf::String &text, sf::Color 
 	setFillColor(defaultColor);
 }
 
-void Button::handleEvent(const sf::Event &event) {
+bool Button::handleEvent(const sf::Event &event) {
 	switch (event.type) {
 		case sf::Event::MouseMoved: {
 			// std::cout << event.mouseMove.x << ' ' << event.mouseMove.y << '\n';
@@ -36,10 +36,13 @@ void Button::handleEvent(const sf::Event &event) {
 			bool contains = getGlobalBounds().contains(
 				sf::Vector2f(static_cast<float>(event.mouseButton.x), static_cast<float>(event.mouseButton.y)));
 
-			if (contains)
+			if (contains) {
 				onClick();
+				return true;
+			}
 		}
 	}
+	return false;
 }
 
 

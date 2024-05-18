@@ -5,10 +5,14 @@
 #include "../../headers/game_states/MenuState.hpp"
 #include <iostream>
 
+#include "../../headers/exceptions/AlreadyHostingExeption.h"
+#include "../../headers/exceptions/NoHostFoundException.h"
+#include "../../headers/exceptions/WrongCharacterEnteredException.h"
 #include "../../headers/game_states/ClientLobbyState.h"
 #include "../../headers/game_states/GameState.h"
 #include "../../headers/game_states/LobbyState.h"
 #include "../../headers/game_states/ServerLobbyState.h"
+#include "../../headers/network/ClientManager.h"
 #include "../../headers/network/ServerManager.h"
 
 
@@ -37,11 +41,17 @@ MenuState::MenuState(GameStateManager *manager,
 }
 
 void MenuState::handleEvent(const sf::Event &event) {
-	m_name_input_field.handleEvent(event);
+	try {
+		m_name_input_field.handleEvent(event);
+	} catch (WrongCharacterEnteredException err) {
+		std::cout << err.getError() << '\n';
+	}
 	if (playBtn)
-		playBtn->handleEvent(event);
+		if (playBtn->handleEvent(event))
+			return;
 	if (hostBtn)
-		hostBtn->handleEvent(event);
+		if (hostBtn->handleEvent(event))
+			return;
 }
 
 void MenuState::render() {
@@ -57,15 +67,30 @@ void MenuState::update(const sf::Time &deltaTime) {
 
 void MenuState::host() {
 	// auto server_manager = std::make_unique<ServerManager>();
-	auto lobby_state = std::make_unique<ServerLobbyState>(m_game_state_manager, m_window, m_name_input_field.getText());
-	// m_game_state_manager->setState(std::move(lobby_state));
-	m_game_state_manager->enqueueState(std::move(lobby_state));
+	try {
+		ServerManager::getInstance().tryBind();
+
+		auto lobby_state = std::make_unique<ServerLobbyState>(m_game_state_manager, m_window,
+		                                                      m_name_input_field.getText());
+		m_game_state_manager->setState(std::move(lobby_state));
+		// m_game_state_manager->enqueueState(std::move(lobby_state));
+	} catch (AlreadyHostingExeption &e) {
+		std::cout << e << '\n';
+	}
 }
 
 void MenuState::play() {
-	auto lobby_state = std::make_unique<ClientLobbyState>(m_game_state_manager, m_window, m_name_input_field.getText());
-	m_game_state_manager->enqueueState(std::move(lobby_state));
-	// m_game_state_manager->setState(std::move(lobby_state));
+	try {
+		ClientManager::getInstance().tryConnect();
+
+		auto lobby_state = std::make_unique<ClientLobbyState>(m_game_state_manager, m_window,
+		                                                      m_name_input_field.getText());
+
+		// m_game_state_manager->enqueueState(std::move(lobby_state));
+		m_game_state_manager->setState(std::move(lobby_state));
+	} catch (NoHostFoundException &e) {
+		std::cout << e << '\n';
+	}
 }
 
 MenuState::~MenuState() = default;

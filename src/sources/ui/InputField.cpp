@@ -6,6 +6,7 @@
 
 #include <iostream>
 
+#include "../../headers/exceptions/WrongCharacterEnteredException.h"
 #include "../../headers/ui/AssetManager.h"
 
 
@@ -25,6 +26,10 @@ InputField::InputField() {
 
 std::string InputField::getText() {
     return inputText;
+}
+
+void InputField::setSelected(bool selected) {
+    isSelected = selected;
 }
 
 void InputField::handleEventCurrent(const sf::Event &event) {
@@ -53,6 +58,8 @@ void InputField::handleEventCurrent(const sf::Event &event) {
                     text.setFillColor(sf::Color::Black);
                 }
                 text.setString(inputText);
+            } else {
+                throw WrongCharacterEnteredException("you entered a forbidden character");
             }
         }
     }

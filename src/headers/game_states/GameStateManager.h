@@ -38,10 +38,6 @@ public:
 
 	void sendData();
 
-	void dequeueState();
-
-	void enqueueState(std::unique_ptr<State> state);
-
 	NetworkManager *getNetworkManager();
 
 	~GameStateManager();

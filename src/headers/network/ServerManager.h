@@ -48,6 +48,8 @@ public:
 
 	const std::string &getServerId() const;
 
+	void tryBind();
+
 	void start(std::string &name);
 
 	void handlePlayerJoinedLobby(std::string id, std::string name);

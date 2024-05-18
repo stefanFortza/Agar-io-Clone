@@ -16,9 +16,7 @@ class InputField : public SceneNode {
 public:
     InputField();
 
-    void setSelected(bool selected) {
-        isSelected = selected;
-    }
+    void setSelected(bool selected);
 
     std::string getText();
 

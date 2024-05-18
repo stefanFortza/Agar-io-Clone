@@ -22,7 +22,7 @@ public:
 	       sf::Color defaultColor = sf::Color::Black,
 	       sf::Color markColor = sf::Color::Blue);
 
-	void handleEvent(const sf::Event &event);
+	bool handleEvent(const sf::Event &event);
 
 	friend std::ostream &operator<<(std::ostream &os, const Button &obj) {
 		std::string str = obj.getString();

@@ -6,10 +6,51 @@
 
 #include <iostream>
 
+#include "../../headers/exceptions/NoHostFoundException.h"
 #include "../../headers/utils/Utils.h"
 #include "SFML/Network/Packet.hpp"
 
+ClientManager *ClientManager::instance;
+
 ClientManager::ClientManager(): m_is_running(false) {
+}
+
+void ClientManager::tryConnect() {
+	unsigned short port = 50001;
+	sf::Socket::Status status = m_socket.bind(50001);
+	m_socket.setBlocking(false);
+	while (status != sf::Socket::Done) {
+		port++;
+		status = m_socket.bind(port);
+	}
+	std::cout << "bound to port: " << port << '\n';
+
+	sf::Packet packet;
+	packet << HeartBeat;
+	m_socket.send(packet, "127.0.0.1", 50000);
+	sf::IpAddress sender;
+
+	sf::Clock clk;
+	while (true) {
+		if (m_socket.receive(m_packet, sender, port) == sf::Socket::Done) {
+			int type;
+			auto id = NetworkUtils::getIdFromAdressAndPort(sender, port);
+			m_packet >> type;
+
+			switch (static_cast<PacketType>(type)) {
+				case HeartBeat: {
+					m_socket.unbind();
+					return;
+				}
+				default: ;
+			}
+		}
+
+		if (clk.getElapsedTime().asSeconds() >= 2) {
+			m_socket.unbind();
+			throw NoHostFoundException("A host player could not be found");
+		}
+	}
 }
 
 void ClientManager::start(std::string name) {
@@ -28,8 +69,6 @@ void ClientManager::start(std::string name) {
 	NetworkManager::setLocalId(m_client_id);
 
 	sf::Packet packet;
-	std::string type = "connected";
-
 	// Tell server i joined
 	packet << PlayerJoinedLobby << name;
 	m_socket.send(packet, "127.0.0.1", 50000);
@@ -49,8 +88,10 @@ void ClientManager::disconnect() {
 
 
 ClientManager &ClientManager::getInstance() {
-	static ClientManager instance;
-	return instance;
+	if (instance == nullptr) {
+		instance = new ClientManager();
+	}
+	return *instance;
 }
 
 

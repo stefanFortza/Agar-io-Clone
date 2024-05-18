@@ -19,6 +19,7 @@ class ClientManager {
     std::map<std::string, OnlinePlayerData> m_online_players;
     std::string m_client_id;
     bool m_is_running;
+    static ClientManager *instance;
 
 public:
     Signal<const std::map<std::string, OnlinePlayerData> &> onJoinedLobby;
@@ -62,6 +63,8 @@ public:
     void sendData();
 
     void sendPacketToServer(sf::Packet &packet);
+
+    void tryConnect();
 
 private:
     ClientManager();
