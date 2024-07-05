@@ -1,74 +1,37 @@
-Joc online multiplayer in care cea mai mare bilă este pe primul loc.
+[![LinkedIn][linkedin-shield]][linkedin-url]
 
-### Important!
-Aveți voie cu cod generat de modele de limbaj la care nu ați contribuit semnificativ doar în folder-ul `generated`.
-Codul generat pus "ca să fie"/pe care nu îl înțelegeți se punctează doar pentru puncte bonus, doar în contextul
-în care oferă funcționalități ajutătoare și doar dacă are sens.
+<div align="center">
 
-O cerință nu se consideră îndeplinită dacă este realizată doar ca o serie de apeluri proxy către cod generat.
+<h3 align="center">Agar io Clone</h3>
 
-### Cerințe modele de limbaj la nivel de semestru
-- [ ] minim o funcționalitate majoritar doar cu LLM
-- [ ] minim 2-3 funcționalități ~50% voi, ~50% LLM-ul
-- [ ] minim 2-3 funcționalități suficient de complicate pe care un LLM nu le poate implementa
+  <p align="center">
+This project is an Agar.io clone developed in C++ using the SFML library for graphics and networking. It replicates the multiplayer online game where players control a cell and consume smaller cells to grow larger while avoiding being eaten by bigger cells.
+  </p>
+</div>
 
-### Tema 0
+![Screenshot of game](screenshots/game.png)
+![Screenshot of lobby](screenshots/lobby.png)
 
-- [ ] Nume proiect (poate fi schimbat ulterior)
-- [ ] Scurtă descriere a temei alese, ce v-ați propus să implementați
+### Built With
 
-## Tema 1
+* [![C++][C++-shield]][C++-url]
+* [![SFML][SFML]][SFML-url]
 
-#### Cerințe
-- [ ] definirea a minim **3-4 clase** folosind compunere cu clasele definite de voi
-- [ ] constructori de inițializare
-- [ ] pentru o aceeași (singură) clasă: constructor de copiere, `operator=` de copiere, destructor
-<!-- - [ ] pentru o altă clasă: constructor de mutare, `operator=` de mutare, destructor -->
-<!-- - [ ] pentru o altă clasă: toate cele 5 funcții membru speciale -->
-- [ ] `operator<<` pentru toate clasele pentru afișare (std::ostream)
-- [ ] cât mai multe `const` (unde este cazul)
-- [ ] implementarea a minim 3 funcții membru publice pentru funcționalități specifice temei alese, dintre care cel puțin 1-2 funcții mai complexe
-  - nu doar citiri/afișări sau adăugat/șters elemente într-un/dintr-un vector
-- [ ] scenariu de utilizare a claselor definite:
-  - crearea de obiecte și apelarea tuturor funcțiilor membru publice în main
-  - vor fi adăugate în fișierul `tastatura.txt` DOAR exemple de date de intrare de la tastatură (dacă există); dacă aveți nevoie de date din fișiere, creați alte fișiere separat
-- [ ] tag de `git`: de exemplu `v0.1`
-- [ ] serviciu de integrare continuă (CI); exemplu: GitHub Actions
 
-## Tema 2
+<!-- MARKDOWN LINKS & IMAGES -->
+<!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
+[linkedin-shield]: https://img.shields.io/badge/linkedin-white?style=for-the-badge&logo=linkedin&logoColor=%230A66C2
 
-#### Cerințe
-- [ ] separarea codului din clase în `.h` (sau `.hpp`) și `.cpp`
-- [ ] moșteniri:
-  - minim o clasă de bază și **3 clase derivate**
-  - ierarhia trebuie să fie cu bază proprie, nu derivată dintr-o clasă predefinită
-  - [ ] clasă cu atribut de tip pointer la o clasă de bază cu derivate
-  - [ ] funcții virtuale (pure) apelate prin pointeri de bază din clasa care conține atributul de tip pointer de bază
-    - minim o funcție virtuală va fi **specifică temei** (e.g. nu simple citiri/afișări)
-    - constructori virtuali (clone): sunt necesari, dar nu se consideră funcții specifice temei
-  - [ ] apelarea constructorului din clasa de bază din constructori din derivate
-  - [ ] smart pointers (recomandat, opțional)
-  - [ ] `dynamic_cast`/`std::dynamic_pointer_cast` pentru downcast cu sens
-- [ ] suprascris cc/op= pentru copieri/atribuiri corecte, copy and swap
-- [ ] excepții
-  - [ ] ierarhie proprie cu baza `std::exception` sau derivată din `std::exception`; minim **3** clase pentru erori specifice
-  - [ ] utilizare cu sens: de exemplu, `throw` în constructor (sau funcție care întoarce un obiect), `try`/`catch` în `main`
-- [ ] funcții și atribute `static`
-- [ ] STL
-- [ ] cât mai multe `const`
-- [ ] la sfârșit: commit separat cu adăugarea unei noi clase derivate fără a modifica restul codului, **pe lângă cele 3 derivate deja adăugate**
-  - noua derivată nu poate fi una existentă care a fost ștearsă și adăugată din nou
-- [ ] tag de `git`: de exemplu `v0.2`
+[linkedin-url]: https://www.linkedin.com/in/tacudarius/
+[C++-shield]: https://img.shields.io/badge/C%2B%2B-white?style=for-the-badge&logo=cplusplus&logoColor=00599C
+[C++-url]: https://nextjs.org/
+[SFML]: https://img.shields.io/badge/SFML-black?style=for-the-badge&logo=sfml&logoColor=8CC445
+[SFML-url]: https://www.sfml-dev.org/
 
-## Tema 3
 
-#### Cerințe
-- [ ] 2 șabloane de proiectare (design patterns)
-- [ ] o clasă șablon cu sens; minim **2 instanțieri**
-  - [ ] preferabil și o funcție șablon (template) cu sens; minim 2 instanțieri
-<!-- - [ ] o specializare pe funcție/clasă șablon -->
-- [ ] tag de `git`: de exemplu `v0.3` sau `v1.0`
+## Features
 
-## Resurse
-
-- adăugați trimiteri către resursele externe care v-au ajutat sau pe care le-ați folosit
+- Real-time multiplayer
+- Score tracking
+- Leaderboard
+- Cell Growth
