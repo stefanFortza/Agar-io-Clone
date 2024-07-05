@@ -8,7 +8,7 @@
 
 #include <iostream>
 
-GameStateManager::GameStateManager(): m_network_manager(nullptr) {
+GameStateManager::GameStateManager() {
 } ;
 
 void GameStateManager::handleEvent(const sf::Event &event) const {
@@ -23,14 +23,11 @@ void GameStateManager::update(const sf::Time &deltaTime) const {
 	currentState->update(deltaTime);
 }
 
-void GameStateManager::setState(std::unique_ptr<State> state) {
+void GameStateManager::transitionTo(std::unique_ptr<State> state) {
 	// currentState.
 	currentState = std::move(state);
 }
 
-void GameStateManager::setNetworkManager(std::unique_ptr<NetworkManager> network_manager) {
-	m_network_manager = std::move(network_manager);
-}
 
 void GameStateManager::receiveData() {
 	if (ServerManager::getInstance().isRunning()) {
@@ -41,13 +38,7 @@ void GameStateManager::receiveData() {
 }
 
 void GameStateManager::sendData() {
-	if (m_network_manager)
-		m_network_manager->sendData();
 }
 
-
-NetworkManager *GameStateManager::getNetworkManager() {
-	return m_network_manager.get();
-}
 
 GameStateManager::~GameStateManager() = default;

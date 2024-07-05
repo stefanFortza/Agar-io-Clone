@@ -23,12 +23,6 @@ private:
 public:
     explicit NetworkManager(NetworkManagerState state);
 
-    void disconnect();
-
-    void receiveData();
-
-    void sendData();
-
     static void setLocalId(const std::string &id);
 
     static std::string &getLocalId();

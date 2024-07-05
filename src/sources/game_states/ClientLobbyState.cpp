@@ -54,5 +54,5 @@ void ClientLobbyState::onPlayerJoinedLobby(const OnlinePlayerData &player) {
 
 void ClientLobbyState::onGameStarted(const std::map<std::string, OnlinePlayerData> &player_data) {
     auto client_game_state = std::make_unique<ClientGameState>(m_game_state_manager, m_window, player_data);
-    m_game_state_manager->setState(std::move(client_game_state));
+    m_game_state_manager->transitionTo(std::move(client_game_state));
 }

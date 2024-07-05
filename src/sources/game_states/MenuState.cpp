@@ -18,7 +18,6 @@
 
 MenuState::MenuState(GameStateManager *manager,
                      sf::RenderWindow *window): State(manager, window),
-
                                                 playBtn(nullptr),
                                                 grid(manager, window) {
 	playBtn = std::make_unique<Button>([this] { play(); });
@@ -38,6 +37,13 @@ MenuState::MenuState(GameStateManager *manager,
 	m_name_input_field.setSelected(true);
 	m_name_input_field.setPosition(m_window->getSize().x / 2 - 200,
 	                               m_window->getSize().y / 2 - 150);
+
+	m_error_label.setString("");
+	m_error_label.setCharacterSize(40);
+	m_error_label.setOutlineColor(sf::Color::Black);
+	m_error_label.setFillColor(sf::Color::Red);
+	m_error_label.setPosition(m_window->getSize().x / 2 - m_error_label.getGlobalBounds().width / 2,
+	                          m_window->getSize().y / 2 - m_error_label.getGlobalBounds().height / 2 + 110);
 }
 
 void MenuState::handleEvent(const sf::Event &event) {
@@ -45,6 +51,7 @@ void MenuState::handleEvent(const sf::Event &event) {
 		m_name_input_field.handleEvent(event);
 	} catch (WrongCharacterEnteredException err) {
 		std::cout << err.getError() << '\n';
+		m_error_label.setString(err.getError());
 	}
 	if (playBtn)
 		if (playBtn->handleEvent(event))
@@ -57,12 +64,15 @@ void MenuState::handleEvent(const sf::Event &event) {
 void MenuState::render() {
 	m_window->draw(grid);
 	m_window->draw(m_name_input_field);
+	m_window->draw(m_error_label);
 	m_window->draw(*playBtn);
 	m_window->draw(*hostBtn);
 }
 
 void MenuState::update(const sf::Time &deltaTime) {
 	m_name_input_field.update(deltaTime);
+	m_error_label.setPosition(m_window->getSize().x / 2 - m_error_label.getGlobalBounds().width / 2,
+	                          m_window->getSize().y / 2 - m_error_label.getGlobalBounds().height / 2 + 110);
 }
 
 void MenuState::host() {
@@ -72,10 +82,11 @@ void MenuState::host() {
 
 		auto lobby_state = std::make_unique<ServerLobbyState>(m_game_state_manager, m_window,
 		                                                      m_name_input_field.getText());
-		m_game_state_manager->setState(std::move(lobby_state));
+		m_game_state_manager->transitionTo(std::move(lobby_state));
 		// m_game_state_manager->enqueueState(std::move(lobby_state));
 	} catch (AlreadyHostingExeption &e) {
 		std::cout << e << '\n';
+		m_error_label.setString(e.getError());
 	}
 }
 
@@ -87,9 +98,10 @@ void MenuState::play() {
 		                                                      m_name_input_field.getText());
 
 		// m_game_state_manager->enqueueState(std::move(lobby_state));
-		m_game_state_manager->setState(std::move(lobby_state));
+		m_game_state_manager->transitionTo(std::move(lobby_state));
 	} catch (NoHostFoundException &e) {
 		std::cout << e << '\n';
+		m_error_label.setString(e.getError());
 	}
 }
 

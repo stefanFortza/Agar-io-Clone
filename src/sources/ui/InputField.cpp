@@ -35,6 +35,9 @@ void InputField::setSelected(bool selected) {
 void InputField::handleEventCurrent(const sf::Event &event) {
     if (event.type == sf::Event::TextEntered) {
         if (isSelected) {
+            if (event.text.unicode < 32 && event.text.unicode != 8)
+                throw WrongCharacterEnteredException("You entered a forbidden character");
+
             if (event.text.unicode < 128) {
                 if (event.text.unicode == '\b') {
                     // Backspace
@@ -59,7 +62,7 @@ void InputField::handleEventCurrent(const sf::Event &event) {
                 }
                 text.setString(inputText);
             } else {
-                throw WrongCharacterEnteredException("you entered a forbidden character");
+                throw WrongCharacterEnteredException("You entered a forbidden character");
             }
         }
     }

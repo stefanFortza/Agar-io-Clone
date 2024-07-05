@@ -27,7 +27,8 @@ private:
 	std::unique_ptr<Button> playBtn;
 	std::unique_ptr<Button> hostBtn;
 	Grid grid;
-	bool m_is_transitioning;
+	Label m_error_label;
+	bool m_is_transitioning{};
 
 	void play();
 

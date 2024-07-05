@@ -12,7 +12,7 @@ Game::Game() : m_game_state_manager(new GameStateManager()),
 
 	AssetManager::initialize();
 	m_window.setFramerateLimit(60);
-	m_game_state_manager->setState(std::make_unique<MenuState>(m_game_state_manager, &m_window));
+	m_game_state_manager->transitionTo(std::make_unique<MenuState>(m_game_state_manager, &m_window));
 };
 
 Game::~Game() = default;
